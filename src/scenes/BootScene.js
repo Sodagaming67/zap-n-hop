@@ -27,6 +27,18 @@ class BootScene extends Phaser.Scene {
     g.fillStyle(0xff4444);
     g.fillRect(0, 0, 32, 32);
     g.generateTexture('enemy', 32, 32);
+    g.clear();
+
+    // star (16x16 white 5-pointed star)
+    g.fillStyle(0xFFFFFF);
+    const starPoints = [];
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI / 5) - Math.PI / 2;
+      const r = i % 2 === 0 ? 8 : 3.5;
+      starPoints.push({ x: 8 + r * Math.cos(angle), y: 8 + r * Math.sin(angle) });
+    }
+    g.fillPoints(starPoints, true);
+    g.generateTexture('star', 16, 16);
     g.destroy();
   }
 

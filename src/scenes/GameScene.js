@@ -48,6 +48,18 @@ class GameScene extends Phaser.Scene {
     this.coins = this.physics.add.staticGroup();
     coinPositions.forEach(({ x, y }) => this.coins.create(x, y, 'coin'));
 
+    // stars
+    const starPositions = [
+      { x: 264, y: 320 }, { x: 328, y: 320 },
+      { x: 514, y: 250 },
+      { x: 764, y: 310 },
+      { x: 1014, y: 230 }, { x: 1078, y: 230 },
+      { x: 1182, y: 320 }, { x: 1246, y: 320 },
+      { x: 1464, y: 210 },
+    ];
+    this.stars = this.physics.add.staticGroup();
+    starPositions.forEach(({ x, y }) => this.stars.create(x, y, 'star'));
+
     // level end flag (simple colored rectangle)
     const flagGfx = this.add.graphics();
     flagGfx.fillStyle(0x00ff00);
@@ -88,6 +100,12 @@ class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.coins, (player, coin) => {
       coin.destroy();
       this.score += 10;
+      this.events.emit('scoreUpdate', this.score);
+    });
+
+    this.physics.add.overlap(this.player, this.stars, (player, star) => {
+      star.destroy();
+      this.score += 25;
       this.events.emit('scoreUpdate', this.score);
     });
 
