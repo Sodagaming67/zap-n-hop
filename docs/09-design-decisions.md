@@ -521,6 +521,31 @@ Six independent changes across four files:
 
 ---
 
+### More Ground Zombies, Rename, Fireball Explosions
+
+**What was asked:** "Can you add a lot more zombies at the bottom, rename the game to 'Apocalips Run', and add small explosions when fireballs hit the ground?"
+
+**What was built**
+- `groundZombieData` expanded from 8 to 24 entries, placing zombies at every gap between existing skeletons. Every ~250–350px of street now has at least one enemy.
+- Title changed to `APOCALIPS RUN` in `MenuScene.js` and `<title>` in `index.html`. Font size nudged from 64px to 52px so the longer name fits on one line.
+- `_explodeFireball(fb)` replaces the old `fb => fb.destroy()` inline. Creates a `Graphics` object at impact, draws 3 concentric circles (orange/yellow/white), then tweens `scale` to 2.4 and `alpha` to 0 over 340ms before destroying itself.
+
+**Why this way**
+- **Graphics tween for explosion** — no new texture needed, no particle emitter setup. A `Graphics` object created at the point of impact, tweened, and destroyed is 12 lines and zero assets. Particle emitters are more realistic but require a texture key and emitter config.
+- **Tween scale+alpha together** — scaling up while fading out reads as an outward burst. Just fading would look like it vanishes; just scaling would look like it grows forever.
+- **24 ground zombies instead of a spawn system** — pre-placed enemies stay in their patrol zones and don't pile up. A dynamic spawn system would cause clustering near the player and feel unfair.
+
+**What was ruled out**
+
+| Option | Why rejected |
+|--------|-------------|
+| Particle emitter for explosion | Requires texture + emitter config; tween on Graphics is simpler with same visual result |
+| Explosion that damages the player | Fireballs already deal contact damage before landing — double punishment isn't fun |
+| Dynamic zombie spawn at street level | Would cluster near player; fixed patrol zones are predictable and fairer |
+| Keeping old name | User asked to rename it |
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

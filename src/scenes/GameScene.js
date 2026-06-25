@@ -299,16 +299,32 @@ class GameScene extends Phaser.Scene {
       });
     });
 
-    // Extra ground zombies — fills gaps between skeletons
+    // Extra ground zombies — dense street-level coverage
     const groundZombieData = [
       { x: 625,  y: 430, min: 575,  max: 735  },
+      { x: 900,  y: 430, min: 840,  max: 1000 },
+      { x: 1280, y: 430, min: 1210, max: 1380 },
       { x: 1650, y: 430, min: 1590, max: 1840 },
+      { x: 1840, y: 430, min: 1760, max: 1960 },
+      { x: 2180, y: 430, min: 2100, max: 2280 },
       { x: 2280, y: 430, min: 2210, max: 2340 },
+      { x: 2720, y: 430, min: 2650, max: 2830 },
+      { x: 3150, y: 430, min: 3080, max: 3260 },
+      { x: 3540, y: 430, min: 3470, max: 3660 },
+      { x: 3960, y: 430, min: 3860, max: 4090 },
       { x: 4450, y: 430, min: 4410, max: 4540 },
+      { x: 4890, y: 430, min: 4820, max: 5000 },
+      { x: 5250, y: 430, min: 5170, max: 5360 },
       { x: 5380, y: 430, min: 5275, max: 5490 },
+      { x: 5780, y: 430, min: 5680, max: 5880 },
       { x: 5950, y: 430, min: 5870, max: 5990 },
+      { x: 6290, y: 430, min: 6210, max: 6370 },
       { x: 6440, y: 430, min: 6370, max: 6495 },
+      { x: 6790, y: 430, min: 6730, max: 6880 },
       { x: 6930, y: 430, min: 6870, max: 7000 },
+      { x: 7250, y: 430, min: 7180, max: 7320 },
+      { x: 7570, y: 430, min: 7490, max: 7660 },
+      { x: 7870, y: 430, min: 7800, max: 7960 },
     ];
     groundZombieData.forEach(({ x, y, min, max }) => {
       const z = this.enemies.create(x, y, 'zombie');
@@ -395,7 +411,7 @@ class GameScene extends Phaser.Scene {
       arrow.destroy(); this._takeDamage(20);
     });
 
-    this.physics.add.collider(this.fireballs, this.platforms, fb => fb.destroy());
+    this.physics.add.collider(this.fireballs, this.platforms, fb => this._explodeFireball(fb));
     this.physics.add.overlap(this.player, this.fireballs, (_, fb) => {
       if (this.isGameOver || this.invincible) return;
       fb.destroy(); this._takeDamage(25);
@@ -763,6 +779,21 @@ class GameScene extends Phaser.Scene {
   }
 
   // ─── Spawners ──────────────────────────────────────────────────────────────
+
+  _explodeFireball(fb) {
+    const x = fb.x, y = fb.y;
+    fb.destroy();
+    const gfx = this.add.graphics();
+    gfx.fillStyle(0xFF6600, 0.75); gfx.fillCircle(0, 0, 16);
+    gfx.fillStyle(0xFFCC00, 0.9);  gfx.fillCircle(0, 0, 10);
+    gfx.fillStyle(0xFFFFFF, 1);    gfx.fillCircle(0, 0, 5);
+    gfx.setPosition(x, y);
+    this.tweens.add({
+      targets: gfx, scaleX: 2.4, scaleY: 2.4, alpha: 0,
+      duration: 340, ease: 'Power2',
+      onComplete: () => gfx.destroy()
+    });
+  }
 
   _spawnFireball() {
     if (this.isGameOver) return;

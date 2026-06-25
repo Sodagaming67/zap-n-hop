@@ -306,6 +306,20 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #24 — More Ground Zombies, Rename to "Apocalips Run", Fireball Explosions
+
+**Asked:** "Can you add a lot more zombies at the bottom, rename the game to 'Apocalips Run', and add small explosions when fireballs hit the ground?"
+**Status:** ✓ Done
+**What was built:**
+- **More ground zombies**: Ground zombie count increased from 8 to 24 — filling every gap between existing skeletons across the full 8000px map. The street is now continuously packed.
+- **Rename**: Game title changed to "APOCALIPS RUN" in the main menu and browser tab.
+- **Fireball explosions**: Fireballs no longer silently disappear on platform hit. `_explodeFireball()` creates a concentric-circle Graphics object (orange outer, yellow mid, white core) at the impact point and tweens it to 2.4× scale + alpha 0 over 340ms.
+
+**Files changed:** `src/scenes/GameScene.js` (`groundZombieData` expanded, `_explodeFireball` method added, fireball collider updated), `src/scenes/MenuScene.js` (title text), `index.html` (title tag)
+**Design note:** → [Session 6 — More Zombies, Rename, Fireball Explosions](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
