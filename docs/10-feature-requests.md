@@ -320,6 +320,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #25 — Title Spelling Fix and More Skeletons
+
+**Asked:** "Can you spell the title correctly and add more skeletons"
+**Status:** ✓ Done
+**What was built:** Title corrected to "APOCALYPSE RUN" in the menu and browser tab. Skeleton count increased from 18 to 35 — added 17 new skeletons filling every gap between existing ones, so the street has near-continuous skeleton coverage across the full 8000px map.
+**Files changed:** `src/scenes/GameScene.js` (`enemyData`), `src/scenes/MenuScene.js`, `index.html`
+**Design note:** → [Session 6 — Title Fix and More Skeletons](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

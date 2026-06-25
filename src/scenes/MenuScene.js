@@ -5,7 +5,7 @@ class MenuScene extends Phaser.Scene {
     const W = 800, H = 500;
 
     // Title
-    this.add.text(W / 2, 78, 'APOCALIPS RUN', {
+    this.add.text(W / 2, 78, 'APOCALYPSE RUN', {
       fontSize: '52px', fontFamily: 'Arial Black',
       color: '#FFD700', stroke: '#000000', strokeThickness: 8
     }).setOrigin(0.5);

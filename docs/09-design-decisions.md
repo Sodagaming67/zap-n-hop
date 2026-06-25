@@ -546,6 +546,18 @@ Six independent changes across four files:
 
 ---
 
+### Title Spelling Fix and More Skeletons
+
+**What was asked:** "Can you spell the title correctly and add more skeletons"
+
+**What was built**
+"Apocalips" corrected to "Apocalypse" in `MenuScene.js` and `index.html`. `enemyData` in `_createEnemies()` expanded from 18 to 35 skeletons by inserting one new entry between every existing pair — filling every ~300–600px gap on the street. Each new skeleton has its own `patrolMin`/`patrolMax` range that doesn't overlap with adjacent skeletons.
+
+**Why this way**
+Same fixed patrol zone approach as existing skeletons — predictable, fair, and no extra state needed. Filling gaps rather than clustering gives even street coverage across all sectors.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
