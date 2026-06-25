@@ -572,6 +572,21 @@ Added `lives: 2` to Thor's entry in `CHAR_STATS`. Changed `this.lives = 3` to `t
 
 ---
 
+### Scary Main Menu
+
+**What was asked:** "Can you make the main menu look scary like the actual game"
+
+**What was built**
+Three-layer procedural city backdrop (far silhouettes → mid buildings with orange windows → near buildings). Animated `Graphics` objects with `fillTriangle` draw flames on every near rooftop; each is tweened to flicker (`scaleY` + `scaleX` + `alpha`) on a random interval. 20 ember particles (`fillRect` 1–3px) are spawned with staggered `delayedCall` delays and tween upward with drift, calling themselves recursively on `onComplete` to loop indefinitely. Title layered three times (dark shadow, mid shadow, bright orange) to simulate a fire glow, then alpha-pulsed via tween. Buttons kept in the same positions for usability but restyled with dark red backgrounds and fire-colored labels.
+
+**Why this way**
+- **No new textures** — everything drawn procedurally, consistent with the zero-asset philosophy.
+- **Recursive `onComplete` instead of `repeat: -1`** for embers — allows repositioning each ember at a new random x before it starts again, which `repeat` alone can't do cleanly.
+- **Layered text for glow** — Phaser Text has no built-in glow shader; stacking 3 slightly offset text objects (dark, mid, bright) achieves the same visual at zero cost.
+- **Same button positions** — muscle memory from previous playthroughs is preserved; only the colors changed.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

@@ -340,6 +340,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #27 — Scary Main Menu Matching Game Aesthetic
+
+**Asked:** "Can you make the main menu look scary like the actual game"
+**Status:** ✓ Done
+**What was built:** Full `MenuScene` visual overhaul. Background is now a three-layer burning city (far silhouettes, mid buildings with glowing orange windows, near buildings with bright orange windows). Animated fire triangles flicker on every near-building rooftop using tweens. 20 floating ember particles drift upward and loop. Title changed from gold to fire-red with a layered shadow for a glow effect and a slow alpha pulse. Buttons restyled to dark red/fire color palette. Currency panel and instructions match the dark aesthetic.
+**Files changed:** `src/scenes/MenuScene.js` (full rewrite)
+**Design note:** → [Session 6 — Scary Menu](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
