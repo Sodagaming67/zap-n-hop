@@ -621,6 +621,21 @@ PLAY → CharacterScene → GameScene. CharacterScene now has two bottom buttons
 
 ---
 
+### Lava Pools
+
+**What was asked:** "Can you add lavapools at the bottom of the map"
+
+**What was built**
+`lavapool` texture (112×20) in BootScene — layered dark-red base, orange-red mid layer, bright orange hot spots, yellow cores, dark crust patches. 15 static sprites placed along the street. Each has a slightly different scale (0.9, 1.1, or 1.3) and a staggered alpha pulse tween. `_setupCollisions` adds an overlap that calls `_takeDamage(20)`.
+
+**Why this way**
+- **Static group** — lava pools don't move, same as platforms and checkpoints.
+- **`_takeDamage` reuse** — it already handles the invincibility window, so the player takes one 20 HP hit per 1.5 seconds while standing in lava rather than every frame. No extra timer needed.
+- **Alpha pulse, not colour change** — the existing texture already has good colour variation; pulsing alpha makes it look like the glow is breathing without needing to redraw.
+- **Scale variation** — three scale values (0.9/1.1/1.3) from a single texture gives visual variety with no extra assets.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

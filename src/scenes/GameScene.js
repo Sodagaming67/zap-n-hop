@@ -246,6 +246,25 @@ class GameScene extends Phaser.Scene {
     this.healthRegens = this.physics.add.staticGroup();
     regenData.forEach(({ x, y }) => this.healthRegens.create(x, y, 'healthregen'));
 
+    // Lava pools — scattered across the street
+    const lavaData = [
+      { x: 380  }, { x: 1000 }, { x: 1200 }, { x: 1580 },
+      { x: 2150 }, { x: 2450 }, { x: 3050 }, { x: 3680 },
+      { x: 4380 }, { x: 4780 }, { x: 5200 }, { x: 5820 },
+      { x: 6520 }, { x: 7200 }, { x: 7780 },
+    ];
+    this.lavaPools = this.physics.add.staticGroup();
+    lavaData.forEach(({ x }, i) => {
+      const pool = this.lavaPools.create(x, 459, 'lavapool');
+      pool.setScale(0.9 + (i % 3) * 0.2);
+      pool.refreshBody();
+      this.tweens.add({
+        targets: pool, alpha: { from: 0.78, to: 1.0 },
+        duration: 600 + (i % 5) * 120,
+        yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
+      });
+    });
+
     const flagGfx = this.add.graphics();
     flagGfx.fillStyle(0x888888); flagGfx.fillRect(0, 0, 4, 60);
     flagGfx.fillStyle(0x00FF44); flagGfx.fillRect(4, 4, 18, 12);
@@ -449,6 +468,10 @@ class GameScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.healthRegens, (_, pkg) => {
       pkg.destroy(); this._heal(35);
+    });
+
+    this.physics.add.overlap(this.player, this.lavaPools, () => {
+      this._takeDamage(20);
     });
 
     this.physics.add.collider(this.missiles, this.platforms, m => m.destroy());

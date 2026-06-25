@@ -383,6 +383,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #31 — Lava Pools at Ground Level
+
+**Asked:** "Can you add lavapools at the bottom of the map"
+**Status:** ✓ Done
+**What was built:** 15 lava pool sprites placed across the street (y=459) at irregular intervals spanning the full 8000px map. Each pool pulses between 78% and 100% alpha on a staggered cycle. Walking through one deals 20 HP damage and triggers the normal invincibility window (so you take one hit every ~1.5 seconds while standing in lava, not every frame). Pools are slightly different widths (scale 0.9–1.3) for visual variety.
+**Files changed:** `src/scenes/BootScene.js` (lavapool texture), `src/scenes/GameScene.js` (`_buildLevel` lava group + tweens, `_setupCollisions` overlap)
+**Design note:** → [Session 6 — Lava Pools](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
