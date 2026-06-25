@@ -393,6 +393,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #32 — Lava Sets Player on Fire
+
+**Asked:** "Can the lavapool light the player on fire"
+**Status:** ✓ Done
+**What was built:** Touching a lava pool now calls `_ignitePlayer()`. The player turns orange (tint 0xFF4400), and rising sparks emit from their body every 140ms. Burn damage of 10 HP ticks every 0.9 seconds. After 4 seconds away from lava the fire extinguishes — the tint clears, sparks stop, burn stops. Re-entering lava while already burning resets the 4-second countdown. Fire is always extinguished on death/respawn.
+**Files changed:** `src/scenes/GameScene.js` (fire state vars, `_ignitePlayer`, `_extinguishPlayer`, `_emitFireSpark`, lava overlap updated, `_playerDied` calls extinguish)
+**Design note:** → [Session 6 — On Fire](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

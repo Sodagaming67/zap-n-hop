@@ -636,6 +636,21 @@ PLAY → CharacterScene → GameScene. CharacterScene now has two bottom buttons
 
 ---
 
+### Lava Sets Player on Fire
+
+**What was asked:** "Can the lavapool light the player on fire"
+
+**What was built**
+`_ignitePlayer()` sets `_onFire = true`, applies an orange tint to the player sprite, starts a 140ms looping spark emitter (`_emitFireSpark`), starts a 900ms burn damage timer (10 HP/tick), and sets a 4-second `delayedCall` to `_extinguishPlayer`. Re-entering lava replaces the countdown without duplicating the timers. `_extinguishPlayer` clears everything. `_playerDied` calls `_extinguishPlayer` first so a burning player respawns clean.
+
+**Why this way**
+- **Tint for visual** — `setTint` applies a colour multiply to the existing character sprite instantly. No new texture, no second sprite needed.
+- **Graphics sparks** — small `fillCircle` objects tweened upward and fading, created every 140ms. Cheap, procedural, and look like embers flying off the player.
+- **Separate burn timer, not every frame** — calling `_takeDamage` in `update()` would hit the invincibility window immediately, effectively doing nothing. A 900ms interval deals a meaningful tick of damage on a predictable cadence.
+- **Reset timer on re-entry, not duplicate** — removing and recreating `_fireTimer` on each lava touch keeps the burn active without multiplying spark/burn events.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

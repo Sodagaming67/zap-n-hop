@@ -43,6 +43,10 @@ class GameScene extends Phaser.Scene {
     this._wasOnGround    = true;
     this._peakFallVel    = 0;
     this._abilityLastUsed = 0;
+    this._onFire     = false;
+    this._fireTimer  = null;
+    this._sparkEvent = null;
+    this._burnEvent  = null;
 
     ['health_upgrade', 'speed_boost', 'unibeam_plus', 'extra_sbomb', 'iron_shield'].forEach(id => {
       if (owned[id] > 0) owned[id]--;
@@ -471,7 +475,7 @@ class GameScene extends Phaser.Scene {
     });
 
     this.physics.add.overlap(this.player, this.lavaPools, () => {
-      this._takeDamage(20);
+      this._ignitePlayer();
     });
 
     this.physics.add.collider(this.missiles, this.platforms, m => m.destroy());
@@ -894,8 +898,54 @@ class GameScene extends Phaser.Scene {
     }
   }
 
+  _ignitePlayer() {
+    if (this.isGameOver) return;
+    this._onFire = true;
+    this.player.setTint(0xFF4400);
+    if (this._fireTimer) this._fireTimer.remove();
+    this._fireTimer = this.time.delayedCall(4000, this._extinguishPlayer, [], this);
+    if (!this._sparkEvent) {
+      this._sparkEvent = this.time.addEvent({
+        delay: 140, loop: true, callback: this._emitFireSpark, callbackScope: this
+      });
+      this._burnEvent = this.time.addEvent({
+        delay: 900, loop: true, callback: () => {
+          if (this._onFire && !this.isGameOver) this._takeDamage(10);
+        }
+      });
+    }
+  }
+
+  _extinguishPlayer() {
+    this._onFire = false;
+    this.player.clearTint();
+    if (this._sparkEvent) { this._sparkEvent.remove(); this._sparkEvent = null; }
+    if (this._burnEvent)  { this._burnEvent.remove();  this._burnEvent  = null; }
+    if (this._fireTimer)  { this._fireTimer.remove();  this._fireTimer  = null; }
+  }
+
+  _emitFireSpark() {
+    if (!this.player.active || this.isGameOver) return;
+    const spark = this.add.graphics();
+    spark.fillStyle(Math.random() > 0.45 ? 0xFF6600 : 0xFF2200, 0.9);
+    spark.fillCircle(0, 0, 2 + Math.random() * 3);
+    spark.setPosition(
+      this.player.x + Phaser.Math.Between(-10, 10),
+      this.player.y + Phaser.Math.Between(-8, 12)
+    );
+    this.tweens.add({
+      targets: spark,
+      y: spark.y - Phaser.Math.Between(22, 44),
+      x: spark.x + Phaser.Math.Between(-12, 12),
+      alpha: 0,
+      duration: 380 + Math.random() * 220,
+      onComplete: () => spark.destroy(),
+    });
+  }
+
   _playerDied() {
     if (this.isGameOver) return;
+    this._extinguishPlayer();
     this.lives--;
     this.events.emit('livesUpdate', this.lives);
     if (this.lives <= 0) {
