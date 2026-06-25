@@ -18,24 +18,7 @@ Each section corresponds to one user feature request, numbered in the order it w
 
 ---
 
-### #1 — Run the Game Locally
-
-**What was asked:** "help me run this game / ok start"
-
-**What was built:**
-A Python local HTTP server launched via `python -m http.server 8080` from the project root. The game is opened at `http://localhost:8080`.
-
-**Why this approach:**
-Phaser.js loads assets (textures, audio, tilemaps) using the browser's Fetch API internally. When you open an HTML file directly with `file://`, browsers block these requests due to CORS security policy. A local HTTP server bypasses this — the browser sees the files as coming from a real origin (`localhost`).
-
-**Alternatives considered:**
-- **VS Code Live Server extension** — also works, but requires installing an extension. Python is available on most machines without extra steps.
-- **Node.js `http-server` or `serve`** — works the same way, but requires npm. Python is simpler for a no-dependency project.
-- **Electron or desktop packaging** — would allow opening as a native app without a server, but massively increases project complexity and is overkill for a game in early development.
-
----
-
-### #2 — Replace Red Dot Enemies with Skeletons That Shoot Arrows
+### #1 — Replace Red Dot Enemies with Skeletons That Shoot Arrows
 
 **What was asked:** "Can you change the red dots to skellatans that shoot arrows?"
 
@@ -59,7 +42,7 @@ The patrol system uses a simple min/max boundary check rather than pathfinding o
 
 ---
 
-### #3 — Fix Skeleton Placement, Safe Start Zone, Fireballs from Sky
+### #2 — Fix Skeleton Placement, Safe Start Zone, Fireballs from Sky
 
 **What was asked:** "First off theres a skellatan at the end, secondly, you should make the start spot safe. Thirdly, you should put fireballs raining from the sky."
 
@@ -80,7 +63,7 @@ Fireballs use Phaser's built-in arcade gravity rather than manually animating y-
 
 ---
 
-### #4 — City-on-Fire Parallax Background
+### #3 — City-on-Fire Parallax Background
 
 **What was asked:** "Can you make the background a city on fire?"
 
@@ -107,7 +90,7 @@ The layer widths were calculated carefully: at maximum camera scroll (worldWidth
 
 ---
 
-### #5 — Sky Zombies, Iron Man Character, Missile Shooting
+### #4 — Sky Zombies, Iron Man Character, Missile Shooting
 
 **What was asked:** "Can you make a few zombies sometimes rain from the sky, and can you change the character apearance to Iron Man, and can you make him shoot missiles if the screen is tapped?"
 
@@ -129,7 +112,7 @@ Using Phaser's pointer events for shooting means it works with both mouse clicks
 
 ---
 
-### #6 — Advanced Weapon Inventory, More Platforms, Extended Level
+### #5 — Advanced Weapon Inventory, More Platforms, Extended Level
 
 **What was asked:** "Can you make iron man have an advanced inventory, can you also add a lot more layers, make stuff more realistic, and extend the level by a TON"
 
@@ -159,43 +142,9 @@ HP over lives is a better fit for a longer level — lives would require frequen
 
 ---
 
-### #7 — Auto-Commit After Every Claude Response
+### #6 — Currency, Item Shop, Premium Shop
 
-**What was asked:** "after every iteration keep committing my changes"
-
-**What was built:**
-A Claude Code Stop hook in `.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "shell": "bash",
-        "command": "cd \"c:/Code/Games/zap-n-hop\" && git add -A && git diff --cached --quiet || git commit -m \"Auto-save: $(git diff --cached --name-only | tr '\\n' ' ' | sed 's/ $//')\""
-      }]
-    }]
-  }
-}
-```
-
-This runs every time Claude finishes a response. It stages all changes and commits only if there's something to commit (the `--quiet` check prevents empty commits).
-
-**Why this approach:**
-Claude Code's Stop hook fires after every response, making it a reliable trigger for "save after each AI iteration." The commit message automatically lists the changed files, so the git log is self-documenting.
-
-**Alternatives considered:**
-- **Manual commits after each session** — relies on the user remembering. The whole point of the request was to automate this.
-- **PreToolUse hook** — fires before tool calls, not after responses. Would commit mid-task, which would capture incomplete states.
-- **PostToolUse on Write/Edit** — would commit after every single file write, creating too many commits for multi-file changes. Stop hook commits once per response — the right granularity.
-- **Git auto-commit via file watcher (fswatch, chokidar)** — would commit on any save, not just after Claude's work. Could accidentally commit mid-edit states.
-
----
-
-### #8 — Currency, Item Shop, Premium Shop
-
-**What was built** (emerged from inventory and economy requests):
+**What was built** (emerged organically from the inventory and economy requests):
 - **Two-currency system**: Stars (★) earned by collecting star pickups; Dots (●) earned by performance (kills, distance)
 - **Item Shop** (`ShopScene`): 5 consumable items purchasable with stars or dots. Items last one run.
 - **Premium Shop** (`PremiumShopScene`): 5 premium items with real-money prices shown. UI is complete but payment backend is not yet implemented.
@@ -215,7 +164,7 @@ localStorage is the simplest persistence layer for a browser game with no backen
 
 ---
 
-### #9 — Design Decisions Living Document
+### #7 — Design Decisions Living Document
 
 **What was asked:** "i want you to save all my feature asks so far and the design choices you made to implement it in a .md file under docs so this can be a living document that constantly gets updated. why you implemented a feature in a certain way and what other options did you consider and rule out in the process is helpful to retroactively look into all the choices and decide if a better technology or framework choice might work better"
 
@@ -262,4 +211,4 @@ These are areas where the current implementation is a known compromise and a bet
 
 ---
 
-*Last updated: 2026-06-24 — covers features #1 through #9.*
+*Last updated: 2026-06-25 — covers features #1 through #7.*
