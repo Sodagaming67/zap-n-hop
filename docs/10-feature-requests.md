@@ -403,13 +403,13 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
-### #33 — Hawkeye Gets 5 Lives
+### #33 — Hawkeye Hearts Changed (5 then back to 3)
 
-**Asked:** "Can you make Hawkeye have 5 hearts"
+**Asked:** "Can you make Hawkeye have 5 hearts" → revised: "Can you reduce Hawkeye to three hearts"
 **Status:** ✓ Done
-**What was built:** Added `lives: 5` to Hawkeye's entry in `CHAR_STATS`. The UI heart icons are now created dynamically based on `this.gameScene.lives` instead of a hardcoded 3, so 5 hearts show for Hawkeye and other characters keep their own counts.
-**Files changed:** `src/scenes/GameScene.js` (CHAR_STATS), `src/scenes/UIScene.js` (heart icon count)
-**Design note:** → [Session 7 — Hawkeye 5 Lives](09-design-decisions.md)
+**What was built:** Added `lives: 5` to Hawkeye's CHAR_STATS, then removed it so Hawkeye falls back to the default 3. UI heart icons were made dynamic (based on `this.gameScene.lives`) so any future character can have a custom count.
+**Files changed:** `src/scenes/GameScene.js` (CHAR_STATS), `src/scenes/UIScene.js` (heart icon count now dynamic)
+**Design note:** → [Session 7 — Hawkeye Hearts](09-design-decisions.md)
 
 ---
 

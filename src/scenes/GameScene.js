@@ -21,7 +21,7 @@ class GameScene extends Phaser.Scene {
       'player_thor':    { speed: 210, jump: 530, hp: 120, invWindow: 1500, ability: 'fly', lives: 2 },
       'player_hulk':    { speed: 170, jump: 730, hp: 150, invWindow: 1500, ability: 'smash'      },
       'player_widow':   { speed: 290, jump: 560, hp: 80,  invWindow: 3500, ability: 'swift'      },
-      'player_hawkeye': { speed: 225, jump: 555, hp: 100, invWindow: 1500, ability: 'pierce', lives: 5 },
+      'player_hawkeye': { speed: 225, jump: 555, hp: 100, invWindow: 1500, ability: 'pierce'     },
       'player_spidey':  { speed: 245, jump: 640, hp: 90,  invWindow: 1500, ability: 'doublejump' },
       'player_panther': { speed: 305, jump: 590, hp: 90,  invWindow: 1500, ability: 'dash'       },
       'player_witch':   { speed: 220, jump: 550, hp: 105, invWindow: 1500, ability: 'hex'        },
