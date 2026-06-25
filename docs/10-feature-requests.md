@@ -235,6 +235,21 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #22 — Cops, Planes, Hot Air Balloons, and Debris
+
+**Asked:** "Can you add cops on the street shooting enemies, and planes, hot air baloons and debret on fire in the sky occasionally smashing to the ground?"
+**Status:** ✓ Done
+**What was built:**
+- **Cops**: 10 police NPCs placed at ground level across the level (x≈550 to x≈7550). Each scans for the nearest enemy within 450px every ~2.6 seconds and fires a yellow cop bullet at it. Cop bullets destroy enemies on contact. Cops are invulnerable and friendly to the player.
+- **Planes**: spawn every 11 seconds, fly across the sky (y=45–95) at 340px/s left or right, and auto-despawn when off-camera.
+- **Hot air balloons**: spawn every 17 seconds, drift across the sky (y=20–75) at 65px/s, and auto-despawn when off-camera.
+- **Debris on fire**: spawn every 2.8 seconds near the player, fall with spin and slight horizontal drift. On hitting a platform they shake the camera, destroy enemies within 90px, and disappear. Direct hit on the player deals 30 HP damage.
+
+**Files changed:** `src/scenes/BootScene.js` (5 new textures), `src/scenes/GameScene.js` (`_createCops`, `_copShoot`, `_spawnPlane`, `_spawnBalloon`, `_spawnDebris`, new groups/timers/collisions/cleanup)
+**Design note:** → [Session 5 — Cops, Planes, Balloons, Debris](09-design-decisions.md)
+
+---
+
 ### #21 — Avengers Character Select Menu
 
 **Asked:** "can you add a character menu with all the Avengers"

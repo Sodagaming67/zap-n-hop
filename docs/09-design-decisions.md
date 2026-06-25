@@ -395,6 +395,32 @@ The stop hook in `.claude/settings.json` runs a bash `git commit` command — it
 
 ---
 
+### Cops, Planes, Hot Air Balloons, and Debris on Fire
+
+**What was asked:** "Can you add cops on the street shooting enemies, and planes, hot air balloons and debris on fire in the sky occasionally smashing to the ground?"
+
+**What was built**
+Four independent systems each driven by a timer or spawner:
+- **Cops** (`_createCops`, `_copShoot`): 10 static police NPCs at y=430 spread across the level. Each has its own shoot timer staggered by 180ms to prevent all-at-once volleys. `_copShoot` iterates `this.enemies` to find the nearest target within 450px and fires a yellow cop bullet horizontally. Cops flip their sprite to face the direction of fire.
+- **Planes** (`_spawnPlane`): Spawned every 11 seconds, spawn off the visible camera edge, fly at 340px/s, and are cleaned up when they exit the other camera edge. Randomly come from left or right.
+- **Hot air balloons** (`_spawnBalloon`): Same pattern but slower (65px/s), every 17 seconds.
+- **Debris** (`_spawnDebris`): Every 2.8 seconds a burning chunk spawns above the player, falls with gravity, spins using `setAngularVelocity`, and has a platform collider that causes a camera shake and AOE enemy clear on impact.
+
+**Why this way**
+Cops use the existing `this.enemies` group — no changes to the enemy system. The cop bullet (`copBullets` group) has its own overlap with enemies and a platform collider, exactly mirroring how arrows and missiles work. Cops have `setAllowGravity(false)` so they don't need a platform collider to stay in place. Planes and balloons use the physics group + camera-relative cleanup (not world-bounds cleanup) because they spawn relative to the camera position, not absolute world x.
+
+**What was ruled out**
+
+| Option | Why rejected |
+|--------|-------------|
+| Cops that patrol/move | Static NPCs are much simpler and still feel alive |
+| Cops that die from enemy contact | Adds cop health state; user asked for cops that shoot enemies, not a survival system |
+| Planes that drop bombs | No request for plane mechanics; adds projectile group complexity for minimal gameplay value |
+| Balloons that can be shot down | Same reasoning — visual enrichment, not a gameplay mechanic |
+| Debris AOE that hurts the player too | Kept off — debris already deals direct contact damage; AOE on landing would be double-punishing |
+
+---
+
 ### More Fireballs and Sky Zombies
 
 **What was asked:** "Can you add a bit more fire balls and zombies"

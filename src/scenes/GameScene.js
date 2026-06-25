@@ -27,11 +27,15 @@ class GameScene extends Phaser.Scene {
     localStorage.setItem('zapnhop_owned', JSON.stringify(owned));
 
     // Projectile groups
-    this.arrows    = this.physics.add.group();
-    this.fireballs = this.physics.add.group();
-    this.missiles  = this.physics.add.group();
-    this.repulsors = this.physics.add.group();
-    this.unibeams  = this.physics.add.group();
+    this.arrows     = this.physics.add.group();
+    this.fireballs  = this.physics.add.group();
+    this.missiles   = this.physics.add.group();
+    this.repulsors  = this.physics.add.group();
+    this.unibeams   = this.physics.add.group();
+    this.copBullets = this.physics.add.group();
+    this.planes     = this.physics.add.group();
+    this.balloons   = this.physics.add.group();
+    this.debrisGroup = this.physics.add.group();
 
     // Inventory — ammo boosted if item was in bag this run
     this.inventory = {
@@ -47,6 +51,7 @@ class GameScene extends Phaser.Scene {
     this._buildLevel();
     this._createPlayer();
     this._createEnemies();
+    this._createCops();
     this._setupCollisions();
     this._setupCamera();
     this._setupInput();
@@ -60,8 +65,11 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    this.time.addEvent({ delay: 900,  loop: true, callback: this._spawnFireball,  callbackScope: this });
-    this.time.addEvent({ delay: 3500, loop: true, callback: this._spawnSkyZombie, callbackScope: this });
+    this.time.addEvent({ delay: 900,   loop: true, callback: this._spawnFireball,  callbackScope: this });
+    this.time.addEvent({ delay: 3500,  loop: true, callback: this._spawnSkyZombie, callbackScope: this });
+    this.time.addEvent({ delay: 2800,  loop: true, callback: this._spawnDebris,    callbackScope: this });
+    this.time.addEvent({ delay: 11000, loop: true, callback: this._spawnPlane,     callbackScope: this });
+    this.time.addEvent({ delay: 17000, loop: true, callback: this._spawnBalloon,   callbackScope: this });
 
     this.scene.launch('UIScene', { gameScene: this });
   }
@@ -434,6 +442,35 @@ class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.flagZone, () => {
       if (!this.isGameOver) this._winLevel();
     });
+
+    // Cop bullets — destroy enemies, stop on platforms
+    this.physics.add.collider(this.copBullets, this.platforms, b => b.destroy());
+    this.physics.add.overlap(this.copBullets, this.enemies, (bullet, enemy) => {
+      bullet.destroy();
+      if (enemy.shootTimer) enemy.shootTimer.remove();
+      enemy.destroy();
+      this.score += 30; this.events.emit('scoreUpdate', this.score);
+    });
+
+    // Debris — smash on landing, hurt player on contact
+    this.physics.add.collider(this.debrisGroup, this.platforms, (debris) => {
+      if (!debris.active) return;
+      const ix = debris.x;
+      this.cameras.main.shake(160, 0.012);
+      this.enemies.getChildren().slice().forEach(e => {
+        if (e.active && Math.abs(e.x - ix) < 90) {
+          if (e.shootTimer) e.shootTimer.remove();
+          e.destroy();
+          this.score += 20;
+        }
+      });
+      this.events.emit('scoreUpdate', this.score);
+      debris.destroy();
+    });
+    this.physics.add.overlap(this.player, this.debrisGroup, (_, debris) => {
+      if (this.isGameOver || this.invincible) return;
+      debris.destroy(); this._takeDamage(30);
+    });
   }
 
   // ─── Camera & Input ────────────────────────────────────────────────────────
@@ -499,12 +536,21 @@ class GameScene extends Phaser.Scene {
 
     // Clean up projectiles out of bounds
     const OOB = p => !p.active || p.x < -100 || p.x > 8100 || p.y < -150 || p.y > 600;
-    [this.missiles, this.repulsors, this.unibeams].forEach(grp => {
+    [this.missiles, this.repulsors, this.unibeams, this.copBullets].forEach(grp => {
       grp.getChildren().slice().forEach(p => { if (OOB(p)) p.destroy(); });
     });
     this.fireballs.getChildren().slice().forEach(fb => { if (fb.active && fb.y > 540) fb.destroy(); });
+    this.debrisGroup.getChildren().slice().forEach(d => { if (d.active && d.y > 540) d.destroy(); });
     this.arrows.getChildren().slice().forEach(a => {
       if (a.active && (a.x < -50 || a.x > this.player.x + 950)) a.destroy();
+    });
+    const camL = this.cameras.main.scrollX - 200;
+    const camR = this.cameras.main.scrollX + 1000;
+    this.planes.getChildren().slice().forEach(p => {
+      if (p.active && (p.x < camL || p.x > camR)) p.destroy();
+    });
+    this.balloons.getChildren().slice().forEach(b => {
+      if (b.active && (b.x < camL || b.x > camR)) b.destroy();
     });
 
     if (this.player.y > 520) this._playerDied();
@@ -662,5 +708,68 @@ class GameScene extends Phaser.Scene {
       color: '#FFD700', stroke: '#000', strokeThickness: 8
     }).setScrollFactor(0).setOrigin(0.5);
     this.time.delayedCall(2500, () => this.scene.start('MenuScene'));
+  }
+
+  // ─── Cops ──────────────────────────────────────────────────────────────────
+
+  _createCops() {
+    this.cops = this.physics.add.group();
+    const positions = [550, 1200, 1950, 2750, 3600, 4400, 5300, 6100, 6900, 7550];
+    positions.forEach((x, i) => {
+      const cop = this.cops.create(x, 430, 'cop');
+      cop.body.setAllowGravity(false);
+      cop.setImmovable(true);
+      cop.shootTimer = this.time.addEvent({
+        delay: 2600 + i * 180, loop: true,
+        callback: () => this._copShoot(cop), callbackScope: this
+      });
+    });
+  }
+
+  _copShoot(cop) {
+    if (this.isGameOver || !cop.active) return;
+    let nearest = null, nearestDist = 450;
+    this.enemies.getChildren().forEach(e => {
+      if (!e.active) return;
+      const dist = Math.abs(e.x - cop.x);
+      if (dist < nearestDist) { nearest = e; nearestDist = dist; }
+    });
+    if (!nearest) return;
+    const dir = nearest.x > cop.x ? 1 : -1;
+    cop.setFlipX(dir === -1);
+    const b = this.copBullets.create(cop.x + dir * 16, cop.y - 8, 'cop_bullet');
+    b.body.setAllowGravity(false);
+    b.setVelocityX(dir * 520);
+    b.setFlipX(dir === -1);
+  }
+
+  // ─── Sky objects ───────────────────────────────────────────────────────────
+
+  _spawnPlane() {
+    if (this.isGameOver) return;
+    const camX = this.cameras.main.scrollX;
+    const fromLeft = Math.random() > 0.5;
+    const p = this.planes.create(fromLeft ? camX - 90 : camX + 890, Phaser.Math.Between(45, 95), 'plane');
+    p.body.setAllowGravity(false);
+    p.setVelocityX(fromLeft ? 340 : -340);
+    if (!fromLeft) p.setFlipX(true);
+  }
+
+  _spawnBalloon() {
+    if (this.isGameOver) return;
+    const camX = this.cameras.main.scrollX;
+    const fromLeft = Math.random() > 0.5;
+    const b = this.balloons.create(fromLeft ? camX - 50 : camX + 850, Phaser.Math.Between(20, 75), 'balloon');
+    b.body.setAllowGravity(false);
+    b.setVelocityX(fromLeft ? 65 : -65);
+  }
+
+  _spawnDebris() {
+    if (this.isGameOver) return;
+    const x = Phaser.Math.Clamp(this.player.x + Phaser.Math.Between(-400, 400), 20, 7980);
+    const d = this.debrisGroup.create(x, -30, 'debris');
+    d.setVelocityY(Phaser.Math.Between(300, 500));
+    d.setVelocityX(Phaser.Math.Between(-60, 60));
+    d.setAngularVelocity(Phaser.Math.Between(-130, 130));
   }
 }
