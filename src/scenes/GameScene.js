@@ -18,7 +18,7 @@ class GameScene extends Phaser.Scene {
     const CHAR_STATS = {
       'player':         { speed: 220, jump: 550, hp: 100, invWindow: 1500, ability: 'arsenal'    },
       'player_cap':     { speed: 230, jump: 565, hp: 115, invWindow: 1500, ability: 'shield'     },
-      'player_thor':    { speed: 210, jump: 530, hp: 120, invWindow: 1500, ability: 'fly'        },
+      'player_thor':    { speed: 210, jump: 530, hp: 120, invWindow: 1500, ability: 'fly', lives: 2 },
       'player_hulk':    { speed: 170, jump: 730, hp: 150, invWindow: 1500, ability: 'smash'      },
       'player_widow':   { speed: 290, jump: 560, hp: 80,  invWindow: 3500, ability: 'swift'      },
       'player_hawkeye': { speed: 225, jump: 555, hp: 100, invWindow: 1500, ability: 'pierce'     },
@@ -35,7 +35,7 @@ class GameScene extends Phaser.Scene {
     this._invWindow   = cs.invWindow;
     this._charAbility = cs.ability;
     this._startShield = has('iron_shield');
-    this.lives        = 3;
+    this.lives        = cs.lives || 3;
 
     // Ability tracking state
     this._jumpHeld       = false;
@@ -591,6 +591,11 @@ class GameScene extends Phaser.Scene {
     }
     if (onGround) this._peakFallVel = 0;
     this._wasOnGround = onGround;
+
+    if (this.player.y < 4) {
+      this.player.y = 4;
+      if (this.player.body.velocity.y < 0) this.player.body.velocity.y = 0;
+    }
 
     // Weapon switch keys 1–4
     const K = Phaser.Input.Keyboard.JustDown;

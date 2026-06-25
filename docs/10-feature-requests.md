@@ -330,6 +330,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #26 — Thor Gets 2 Lives, Screen Ceiling for All Characters
+
+**Asked:** "Can thor only have two lives and not be able to jump higher than the screen. Can the other characters also not be able to jump that high"
+**Status:** ✓ Done
+**What was built:** Added `lives: 2` to Thor's CHAR_STATS entry; `this.lives` now reads from the stat instead of being hardcoded to 3. Added a ceiling clamp in `update()` — if the player's Y goes above 4px, position is reset to 4 and upward velocity zeroed. Applies to every character.
+**Files changed:** `src/scenes/GameScene.js` (CHAR_STATS, lives assignment, update ceiling clamp)
+**Design note:** → [Session 6 — Thor Lives + Screen Ceiling](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

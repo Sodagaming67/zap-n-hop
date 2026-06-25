@@ -558,6 +558,20 @@ Same fixed patrol zone approach as existing skeletons — predictable, fair, and
 
 ---
 
+### Thor 2 Lives + Screen Ceiling
+
+**What was asked:** "Can thor only have two lives and not be able to jump higher than the screen. Can the other characters also not be able to jump that high"
+
+**What was built**
+Added `lives: 2` to Thor's entry in `CHAR_STATS`. Changed `this.lives = 3` to `this.lives = cs.lives || 3` — other characters default to 3 since their entries have no `lives` field. Added a ceiling clamp in `update()`: if `player.y < 4`, snap Y to 4 and zero upward velocity. This applies to every character.
+
+**Why this way**
+- **`lives` in CHAR_STATS, not a separate if-check** — keeps all per-character data in one place. Adding a second character with different lives in the future is just adding a field.
+- **Ceiling clamp in update, not via world bounds** — `setCollideWorldBounds(true)` would also block the bottom edge, preventing the fall-off-screen death trigger at y > 520. Manual Y clamp handles only the top.
+- **y < 4 not y < 0** — gives a 4px buffer so the player sprite doesn't clip into the very top edge before the velocity is zeroed.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
