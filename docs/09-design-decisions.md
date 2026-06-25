@@ -719,6 +719,22 @@ The existing level had no platforms above y=225 until x=4000, meaning the rising
 
 ---
 
+### Enemies on Higher Platforms
+
+**What was asked:** "Can you put skellatans and zombies on the higher platforms"
+
+**What was built**
+5 skeletons (shoot arrows) placed on alternating higher platforms; 6 zombies placed on the rest. Each patrol within the 128px width of their 2-tile platform. Enemy y is set ~40px above the platform y, matching the existing convention so they land correctly.
+
+**Why this way**
+Splitting skeletons and zombies across platforms gives each one a distinct feel — the ranged skeletons are more dangerous on high ground since their arrows are harder to dodge. One enemy per platform avoids crowding the small 2-tile surfaces.
+
+**What was ruled out**
+- Two enemies per platform — 2-tile platforms (128px) are too small; they'd constantly collide with each other.
+- All skeletons — the variety (melee zombie vs ranged skeleton) makes each platform feel different.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

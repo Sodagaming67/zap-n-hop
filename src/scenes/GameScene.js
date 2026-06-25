@@ -349,6 +349,12 @@ class GameScene extends Phaser.Scene {
       { x: 7400, y: 430, min: 7310, max: 7610 },
       { x: 7700, y: 430, min: 7610, max: 7910 },
       { x: 7950, y: 430, min: 7830, max: 7990 },
+      // Skeletons on higher platforms
+      { x: 1064, y: 120, min: 1000, max: 1128 },
+      { x: 2564, y: 115, min: 2500, max: 2628 },
+      { x: 3384, y: 65,  min: 3320, max: 3448 },
+      { x: 5064, y: 45,  min: 5000, max: 5128 },
+      { x: 7364, y: 110, min: 7300, max: 7428 },
     ];
     enemyData.forEach(({ x, y, min, max }) => {
       const e = this.enemies.create(x, y, 'enemy');
@@ -422,6 +428,13 @@ class GameScene extends Phaser.Scene {
       { x: 6592, y: 195, min: 6570, max: 6624, speed: 70 },
       { x: 7534, y: 165, min: 7480, max: 7594, speed: 75 },
       { x: 7808, y: 245, min: 7740, max: 7872, speed: 75 },
+      // Zombies on higher platforms
+      { x: 564,  y: 140, min: 500,  max: 628,  speed: 55 },
+      { x: 1464, y: 100, min: 1400, max: 1528, speed: 55 },
+      { x: 2964, y: 90,  min: 2900, max: 3028, speed: 60 },
+      { x: 4144, y: 50,  min: 4080, max: 4208, speed: 60 },
+      { x: 6084, y: 30,  min: 6020, max: 6148, speed: 65 },
+      { x: 7564, y: 60,  min: 7500, max: 7628, speed: 65 },
     ];
     platformZombieData.forEach(({ x, y, min, max, speed }) => {
       const z = this.enemies.create(x, y, 'zombie');

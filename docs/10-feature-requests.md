@@ -443,6 +443,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #37 — Enemies on Higher Platforms
+
+**Asked:** "Can you put skellatans and zombies on the higher platforms"
+**Status:** ✓ Done
+**What was built:** 5 skeletons added to `enemyData` on the higher platforms (x=1000, 2500, 3320, 5000, 7300) and 6 zombies added to `platformZombieData` on the remaining higher platforms (x=500, 1400, 2900, 4080, 6020, 7500). Each patrols within their 2-tile platform.
+**Files changed:** `src/scenes/GameScene.js` (enemyData, platformZombieData)
+**Design note:** → [Session 7 — Enemies on Higher Platforms](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
