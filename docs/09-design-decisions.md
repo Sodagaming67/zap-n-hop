@@ -587,6 +587,26 @@ Three-layer procedural city backdrop (far silhouettes → mid buildings with ora
 
 ---
 
+### More Sky Objects, Details, Weapon Bar Iron Man Only
+
+**What was asked:** "Can you put more objects in the sky, more details, and can you get rid of the weapons arsenal bar for every character except iron man"
+
+**What was built**
+Three new sky systems + doubled existing spawn rates + UIScene conditional rendering.
+
+- **Helicopters**: New `helicopter` texture (72×30) in BootScene. Spawns via `_spawnHelicopter()` every 9s. Moves at 180px/s — slower than planes (340) but faster than balloons (65). Visual only; no damage.
+- **Bird flocks**: `_spawnBirdFlock()` creates 4–8 `Graphics` objects, each drawing a V-stroke (`lineTo`). Tweened across the sky and destroyed on complete. No texture, no physics group needed.
+- **Smoke clouds**: `_spawnSmokeCloud()` creates a multi-circle `Graphics` (4 overlapping fillCircle calls) that drifts across and fades out over 18–28 seconds. Adds atmospheric depth at no physics cost.
+- **Spawn rate doubles**: Planes 11s→5.5s, balloons 17s→8s. Both have a chance to spawn in pairs.
+- **Weapon bar gated on `arsenal`**: UIScene reads `this.gameScene._charAbility` in `create()`. Only if `'arsenal'`: build the inventory panel, create the weapon label, wire the weapon events, seed the initial weapon state. Other characters get a clean HUD with no weapon clutter.
+
+**Why this way**
+- **Graphics objects for birds and clouds** — no texture needed; both are simple enough to draw inline. Creating textures for them would be unnecessary overhead.
+- **Recursive `onComplete` for birds** — they're one-shot, not looping, so `repeat: -1` isn't appropriate. They cross the screen once and destroy themselves.
+- **Checking `_charAbility` not `charKey`** — if a new character with full arsenal was ever added, it would automatically get the bar; checking the key string would need manual updating.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

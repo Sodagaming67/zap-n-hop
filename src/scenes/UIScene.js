@@ -40,14 +40,17 @@ class UIScene extends Phaser.Scene {
       stroke: '#000000', strokeThickness: 2
     }).setOrigin(0, 0.5);
 
-    // Active weapon label — top center
-    this.weaponLabel = this.add.text(400, 14, 'MISSILE', {
-      fontSize: '20px', fontFamily: 'Arial Black',
-      color: '#ff4444', stroke: '#000000', strokeThickness: 4
-    }).setOrigin(0.5, 0);
-
-    // Inventory bar — bottom of screen
-    this._buildInventoryBar();
+    // Weapon bar and label only shown for Iron Man (full arsenal)
+    const isArsenal = this.gameScene._charAbility === 'arsenal';
+    this.weaponLabel = null;
+    this.slots = [];
+    if (isArsenal) {
+      this.weaponLabel = this.add.text(400, 14, 'MISSILE', {
+        fontSize: '20px', fontFamily: 'Arial Black',
+        color: '#ff4444', stroke: '#000000', strokeThickness: 4
+      }).setOrigin(0.5, 0);
+      this._buildInventoryBar();
+    }
 
     // Lives hearts — bottom-left below score
     this.livesIcons = [];
@@ -73,14 +76,14 @@ class UIScene extends Phaser.Scene {
       this.starText.setText(String(stars));
       this.dotText.setText(String(dots));
     });
-    this.gameScene.events.on('weaponSwitch',   inv => this._refresh(inv));
-    this.gameScene.events.on('inventoryUpdate',inv => this._refresh(inv));
+    this.gameScene.events.on('weaponSwitch',   inv => { if (isArsenal) this._refresh(inv); });
+    this.gameScene.events.on('inventoryUpdate',inv => { if (isArsenal) this._refresh(inv); });
 
     this.gameScene.events.on('shutdown', () => this.scene.stop());
     this.gameScene.events.on('destroy',  () => this.scene.stop());
 
     // Seed initial state
-    this._refresh(this.gameScene.inventory);
+    if (isArsenal) this._refresh(this.gameScene.inventory);
     this.starText.setText(String(this.gameScene.starWallet));
     this.dotText.setText(String(this.gameScene.dotWallet));
     this.livesIcons.forEach((t, i) => t.setColor(i < this.gameScene.lives ? '#ff4444' : '#444444'));
@@ -125,6 +128,7 @@ class UIScene extends Phaser.Scene {
   }
 
   _refresh(inv) {
+    if (!this.weaponLabel) return;
     const w = inv.weapons[inv.current];
     this.weaponLabel.setText(w.label).setColor(w.color);
 

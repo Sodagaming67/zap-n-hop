@@ -60,7 +60,8 @@ class GameScene extends Phaser.Scene {
     this.capShields  = this.physics.add.group();
     this.planes      = this.physics.add.group();
     this.balloons    = this.physics.add.group();
-    this.debrisGroup = this.physics.add.group();
+    this.debrisGroup  = this.physics.add.group();
+    this.helicopters  = this.physics.add.group();
 
     this.inventory = {
       current: 'missile',
@@ -97,9 +98,12 @@ class GameScene extends Phaser.Scene {
 
     this.time.addEvent({ delay: 900,   loop: true, callback: this._spawnFireball,  callbackScope: this });
     this.time.addEvent({ delay: 3500,  loop: true, callback: this._spawnSkyZombie, callbackScope: this });
-    this.time.addEvent({ delay: 2800,  loop: true, callback: this._spawnDebris,    callbackScope: this });
-    this.time.addEvent({ delay: 11000, loop: true, callback: this._spawnPlane,     callbackScope: this });
-    this.time.addEvent({ delay: 17000, loop: true, callback: this._spawnBalloon,   callbackScope: this });
+    this.time.addEvent({ delay: 2800,  loop: true, callback: this._spawnDebris,      callbackScope: this });
+    this.time.addEvent({ delay: 5500,  loop: true, callback: this._spawnPlane,       callbackScope: this });
+    this.time.addEvent({ delay: 8000,  loop: true, callback: this._spawnBalloon,     callbackScope: this });
+    this.time.addEvent({ delay: 9000,  loop: true, callback: this._spawnHelicopter,  callbackScope: this });
+    this.time.addEvent({ delay: 13000, loop: true, callback: this._spawnBirdFlock,   callbackScope: this });
+    this.time.addEvent({ delay: 19000, loop: true, callback: this._spawnSmokeCloud,  callbackScope: this });
 
     this.scene.launch('UIScene', { gameScene: this });
   }
@@ -646,6 +650,9 @@ class GameScene extends Phaser.Scene {
     this.balloons.getChildren().slice().forEach(b => {
       if (b.active && (b.x < camL || b.x > camR)) b.destroy();
     });
+    this.helicopters.getChildren().slice().forEach(h => {
+      if (h.active && (h.x < camL || h.x > camR)) h.destroy();
+    });
 
     if (this.player.y > 520) this._playerDied();
   }
@@ -948,19 +955,84 @@ class GameScene extends Phaser.Scene {
     if (this.isGameOver) return;
     const camX = this.cameras.main.scrollX;
     const fromLeft = Math.random() > 0.5;
-    const p = this.planes.create(fromLeft ? camX - 90 : camX + 890, Phaser.Math.Between(45, 95), 'plane');
-    p.body.setAllowGravity(false);
-    p.setVelocityX(fromLeft ? 340 : -340);
-    if (!fromLeft) p.setFlipX(true);
+    const count = Math.random() < 0.25 ? 2 : 1;
+    for (let i = 0; i < count; i++) {
+      const p = this.planes.create(fromLeft ? camX - 90 - i * 140 : camX + 890 + i * 140, Phaser.Math.Between(40, 100), 'plane');
+      p.body.setAllowGravity(false);
+      p.setVelocityX(fromLeft ? 340 : -340);
+      if (!fromLeft) p.setFlipX(true);
+    }
   }
 
   _spawnBalloon() {
     if (this.isGameOver) return;
     const camX = this.cameras.main.scrollX;
     const fromLeft = Math.random() > 0.5;
-    const b = this.balloons.create(fromLeft ? camX - 50 : camX + 850, Phaser.Math.Between(20, 75), 'balloon');
-    b.body.setAllowGravity(false);
-    b.setVelocityX(fromLeft ? 65 : -65);
+    const count = Math.random() < 0.3 ? 2 : 1;
+    for (let i = 0; i < count; i++) {
+      const b = this.balloons.create(fromLeft ? camX - 50 - i * 90 : camX + 850 + i * 90, Phaser.Math.Between(20, 80), 'balloon');
+      b.body.setAllowGravity(false);
+      b.setVelocityX(fromLeft ? 65 : -65);
+    }
+  }
+
+  _spawnHelicopter() {
+    if (this.isGameOver) return;
+    const camX = this.cameras.main.scrollX;
+    const fromLeft = Math.random() > 0.5;
+    const h = this.helicopters.create(fromLeft ? camX - 80 : camX + 880, Phaser.Math.Between(100, 160), 'helicopter');
+    h.body.setAllowGravity(false);
+    h.setVelocityX(fromLeft ? 180 : -180);
+    if (!fromLeft) h.setFlipX(true);
+  }
+
+  _spawnBirdFlock() {
+    if (this.isGameOver) return;
+    const camX = this.cameras.main.scrollX;
+    const fromLeft = Math.random() > 0.5;
+    const baseX = fromLeft ? camX - 40 : camX + 840;
+    const baseY = Phaser.Math.Between(30, 110);
+    const speed = (fromLeft ? 1 : -1) * Phaser.Math.Between(150, 240);
+    const count = Phaser.Math.Between(4, 8);
+    for (let i = 0; i < count; i++) {
+      const bx = baseX + (Math.random() * 70 - 35);
+      const by = baseY + (Math.random() * 44 - 22);
+      const bird = this.add.graphics();
+      bird.lineStyle(2, 0x111111, 0.8);
+      bird.beginPath();
+      bird.moveTo(-5, 0); bird.lineTo(0, -4); bird.lineTo(5, 0);
+      bird.strokePath();
+      bird.setPosition(bx, by);
+      this.tweens.add({
+        targets: bird,
+        x: bx + speed * 5.5,
+        y: by + Phaser.Math.Between(-25, 25),
+        duration: 5000 + Math.random() * 2000,
+        onComplete: () => bird.destroy(),
+      });
+    }
+  }
+
+  _spawnSmokeCloud() {
+    if (this.isGameOver) return;
+    const camX = this.cameras.main.scrollX;
+    const fromLeft = Math.random() > 0.5;
+    const x = fromLeft ? camX - 90 : camX + 890;
+    const y = Phaser.Math.Between(15, 90);
+    const cloud = this.add.graphics();
+    cloud.fillStyle(0x1A0600, 0.45);
+    cloud.fillCircle(0, 0, 30);
+    cloud.fillCircle(24, -10, 22);
+    cloud.fillCircle(-20, -6, 18);
+    cloud.fillCircle(10, -22, 15);
+    cloud.setPosition(x, y);
+    this.tweens.add({
+      targets: cloud,
+      x: cloud.x + (fromLeft ? 500 : -500),
+      alpha: { from: 0.45, to: 0 },
+      duration: 18000 + Math.random() * 10000,
+      onComplete: () => cloud.destroy(),
+    });
   }
 
   _spawnDebris() {

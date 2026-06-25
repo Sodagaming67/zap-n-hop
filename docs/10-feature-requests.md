@@ -350,6 +350,20 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #28 — More Sky Objects, More Details, Weapon Bar Iron Man Only
+
+**Asked:** "Can you put more objects in the sky, more details, and can you get rid of the weapons arsenal bar for every character except iron man"
+**Status:** ✓ Done
+**What was built:**
+- **More sky objects**: Added helicopters (new `helicopter` texture, spawn every 9s, fly slower than planes), bird flocks (4–8 stroke-based V shapes per flock, every 13s, pure graphics no texture), dark smoke clouds (rolling multi-circle graphics that drift and fade, every 19s). Planes now spawn every 5.5s (was 11s) and 25% chance of a pair. Balloons every 8s (was 17s) with 30% chance of a pair.
+- **More detail**: Smoke clouds rolling through the sky add atmospheric depth. Helicopter adds a mid-speed object between fast planes and slow balloons.
+- **Weapon bar hidden for non-Iron Man**: UIScene checks `_charAbility === 'arsenal'` — only builds the inventory bar and weapon label if true. All other heroes get a clean HUD without the weapon slots.
+
+**Files changed:** `src/scenes/BootScene.js` (helicopter texture), `src/scenes/GameScene.js` (new group, timer changes, 3 new spawner methods, OOB cleanup), `src/scenes/UIScene.js` (conditional inventory bar)
+**Design note:** → [Session 6 — Sky Objects + Weapon Bar](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

@@ -439,6 +439,18 @@ class BootScene extends Phaser.Scene {
     g.fillStyle(0x003399);
     g.fillCircle(11, 11, 2);
     g.generateTexture('cap_shield', 22, 22);
+    g.clear();
+
+    // Helicopter (72×30)
+    g.fillStyle(0x445566); g.fillRect(10, 10, 44, 13); // body
+    g.fillStyle(0x334455); g.fillRect(6,  11, 12, 12); // cockpit nose
+    g.fillStyle(0x334455); g.fillRect(54, 13, 16,  6); // tail boom
+    g.fillStyle(0x556677); g.fillRect(68,  7,  3, 15); // tail fin
+    g.fillStyle(0x88BBDD); g.fillRect(8,  12, 10,  9); // cockpit glass
+    g.fillStyle(0x888899); g.fillRect(8,   7, 56,  3); // main rotor
+    g.fillStyle(0x888899); g.fillRect(65,  9,  3,  9); // tail rotor
+    g.fillStyle(0xFFFFAA); g.fillRect(32, 23,  6,  3); // belly light
+    g.generateTexture('helicopter', 72, 30);
 
     g.destroy();
   }
