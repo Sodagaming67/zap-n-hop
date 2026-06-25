@@ -60,8 +60,8 @@ class GameScene extends Phaser.Scene {
       });
     }
 
-    this.time.addEvent({ delay: 1500, loop: true, callback: this._spawnFireball,  callbackScope: this });
-    this.time.addEvent({ delay: 6000, loop: true, callback: this._spawnSkyZombie, callbackScope: this });
+    this.time.addEvent({ delay: 900,  loop: true, callback: this._spawnFireball,  callbackScope: this });
+    this.time.addEvent({ delay: 3500, loop: true, callback: this._spawnSkyZombie, callbackScope: this });
 
     this.scene.launch('UIScene', { gameScene: this });
   }
@@ -248,7 +248,8 @@ class GameScene extends Phaser.Scene {
   // ─── Player ────────────────────────────────────────────────────────────────
 
   _createPlayer() {
-    this.player = this.physics.add.sprite(64, 400, 'player');
+    const charKey = localStorage.getItem('zapnhop_character') || 'player';
+    this.player = this.physics.add.sprite(64, 400, charKey);
     this.player.setCollideWorldBounds(false);
     this.player.setBounce(0.1);
     this.physics.world.setBounds(0, 0, 8000, 500);
@@ -313,6 +314,17 @@ class GameScene extends Phaser.Scene {
       // Sector 5
       { x: 7334, y: 235, min: 7280, max: 7390, speed: 75 },
       { x: 7744, y: 245, min: 7690, max: 7860, speed: 75 },
+      // Extra — fills remaining elevated platforms
+      { x: 764,  y: 320, min: 710,  max: 828,  speed: 55 },
+      { x: 1014, y: 240, min: 960,  max: 1078, speed: 55 },
+      { x: 2964, y: 215, min: 2910, max: 3028, speed: 60 },
+      { x: 3164, y: 275, min: 3110, max: 3292, speed: 60 },
+      { x: 4394, y: 215, min: 4340, max: 4458, speed: 65 },
+      { x: 5244, y: 245, min: 5190, max: 5308, speed: 65 },
+      { x: 5912, y: 165, min: 5890, max: 5944, speed: 70 },
+      { x: 6592, y: 195, min: 6570, max: 6624, speed: 70 },
+      { x: 7534, y: 165, min: 7480, max: 7594, speed: 75 },
+      { x: 7808, y: 245, min: 7740, max: 7872, speed: 75 },
     ];
     platformZombieData.forEach(({ x, y, min, max, speed }) => {
       const z = this.enemies.create(x, y, 'zombie');
@@ -570,17 +582,23 @@ class GameScene extends Phaser.Scene {
 
   _spawnFireball() {
     if (this.isGameOver) return;
-    const x = Phaser.Math.Clamp(this.player.x + Phaser.Math.Between(-300, 300), 20, 7980);
-    const fb = this.fireballs.create(x, -20, 'fireball');
-    fb.setVelocityY(Phaser.Math.Between(250, 400));
+    const count = Math.random() < 0.35 ? 2 : 1;
+    for (let i = 0; i < count; i++) {
+      const x = Phaser.Math.Clamp(this.player.x + Phaser.Math.Between(-300, 300), 20, 7980);
+      const fb = this.fireballs.create(x, -20, 'fireball');
+      fb.setVelocityY(Phaser.Math.Between(250, 400));
+    }
   }
 
   _spawnSkyZombie() {
     if (this.isGameOver) return;
-    const x = Phaser.Math.Clamp(this.player.x + Phaser.Math.Between(-350, 350), 50, 7950);
-    const z = this.enemies.create(x, -30, 'zombie');
-    z.setVelocityY(220); z.setBounce(0);
-    z.patrolActive = false; z.patrolMin = 0; z.patrolMax = 0;
+    const count = Math.random() < 0.3 ? 2 : 1;
+    for (let i = 0; i < count; i++) {
+      const x = Phaser.Math.Clamp(this.player.x + Phaser.Math.Between(-350, 350), 50, 7950);
+      const z = this.enemies.create(x, -30 - i * 80, 'zombie');
+      z.setVelocityY(220); z.setBounce(0);
+      z.patrolActive = false; z.patrolMin = 0; z.patrolMax = 0;
+    }
   }
 
   _skeletonShoot(skeleton) {

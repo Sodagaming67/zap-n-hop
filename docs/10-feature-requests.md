@@ -225,6 +225,40 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #20 — More Fireballs and Sky Zombies
+
+**Asked:** "Can you add a bit more fire balls and zombies"
+**Status:** ✓ Done
+**What was built:** Fireball spawn interval reduced from 1500ms to 900ms. 35% chance each spawn drops 2 fireballs at once. Sky zombie spawn interval reduced from 6000ms to 3500ms. 30% chance each spawn drops 2 sky zombies at once (staggered 80px apart). 10 additional platform zombies added across all 5 sectors, filling previously empty elevated platforms (total 20 platform zombies).
+**Files changed:** `src/scenes/GameScene.js` (`_spawnFireball`, `_spawnSkyZombie`, `_createEnemies`, timer delays in `create`)
+**Design note:** → [Session 5 — More Fireballs and Zombies](09-design-decisions.md)
+
+---
+
+### #21 — Avengers Character Select Menu
+
+**Asked:** "can you add a character menu with all the Avengers"
+**Status:** ✓ Done
+**What was built:** New `CharacterScene` with a 5×2 grid of 10 Avengers heroes. Each hero is a procedurally drawn 32×48 texture. Clicking a card highlights it gold and saves the choice to localStorage. The selected character loads automatically when you start a run. A "CHARACTERS" button added to the main menu.
+
+| Hero | Key Feature |
+|------|------------|
+| Iron Man | red/gold, arc reactor (existing) |
+| Captain America | blue suit, white star, red stripe |
+| Thor | dark blue armor, silver wings, gold belt, Mjolnir |
+| Hulk | green body, purple pants, angry red eyes |
+| Black Widow | black suit, red hourglass belt detail |
+| Hawkeye | purple suit, dark mask, bow on back |
+| Spider-Man | red/blue split, white web eyes |
+| Black Panther | near-black suit, purple claw marks |
+| Scarlet Witch | deep red, magenta crown, glowing hands |
+| Doctor Strange | blue suit, red cloak, green Eye of Agamotto |
+
+**Files changed:** `src/scenes/CharacterScene.js` (new), `src/scenes/BootScene.js` (9 new textures), `src/scenes/MenuScene.js` (button added), `src/scenes/GameScene.js` (load selected character), `src/main.js`, `index.html`
+**Design note:** → [Session 5 — Avengers Character Select](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

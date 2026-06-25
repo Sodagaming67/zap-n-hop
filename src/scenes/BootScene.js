@@ -167,6 +167,184 @@ class BootScene extends Phaser.Scene {
     g.fillRect(7, 11, 10, 2);
     g.fillRect(11, 7, 2, 10);
     g.generateTexture('healthregen', 24, 24);
+    g.clear();
+
+    // Captain America (32x48) — blue suit, white star, red accent
+    g.fillStyle(0x003399);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0xCC0000);
+    g.fillRect(3, 24, 26, 4);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.fillStyle(0xFFFFFF);
+    g.fillRect(6, 5, 20, 4);
+    const capStar = [];
+    for (let i = 0; i < 10; i++) { const a = (i * Math.PI / 5) - Math.PI / 2; const r = i % 2 === 0 ? 5 : 2; capStar.push({ x: 16 + r * Math.cos(a), y: 20 + r * Math.sin(a) }); }
+    g.fillPoints(capStar, true);
+    g.generateTexture('player_cap', 32, 48);
+    g.clear();
+
+    // Thor (32x48) — dark blue armor, silver helmet wings, red cape arms, gold belt
+    g.fillStyle(0x1A3A8A);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillStyle(0xCC2200);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0xAAAAAA);
+    g.fillRect(5, 0, 22, 4);
+    g.fillRect(5, 0, 4, 12);
+    g.fillRect(23, 0, 4, 12);
+    g.fillStyle(0xFFDD00);
+    g.fillRect(8, 5, 16, 5);
+    g.fillRect(3, 30, 26, 4);
+    g.fillStyle(0x333333);
+    g.fillRect(17, 33, 13, 6);
+    g.generateTexture('player_thor', 32, 48);
+    g.clear();
+
+    // Hulk (32x48) — green body, purple pants, angry red eyes
+    g.fillStyle(0x228B22);
+    g.fillCircle(16, 8, 8);
+    g.fillRect(2, 14, 28, 20);
+    g.fillRect(0, 15, 2, 17);
+    g.fillRect(30, 15, 2, 17);
+    g.fillStyle(0x6622AA);
+    g.fillRect(3, 34, 12, 14);
+    g.fillRect(17, 34, 12, 14);
+    g.fillStyle(0xFF0000);
+    g.fillRect(9, 5, 5, 3);
+    g.fillRect(18, 5, 5, 3);
+    g.generateTexture('player_hulk', 32, 48);
+    g.clear();
+
+    // Black Widow (32x48) — black suit, red hourglass belt
+    g.fillStyle(0x111111);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0xCC0000);
+    g.fillRect(13, 19, 6, 3);
+    g.fillRect(13, 26, 6, 3);
+    g.fillRect(15, 21, 2, 6);
+    g.fillStyle(0x222222);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.generateTexture('player_widow', 32, 48);
+    g.clear();
+
+    // Hawkeye (32x48) — purple suit, darker mask, bow on back
+    g.fillStyle(0x441188);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0x220066);
+    g.fillRect(5, 5, 22, 4);
+    g.fillStyle(0xCC8800);
+    g.fillRect(3, 30, 26, 4);
+    g.fillStyle(0x8B5E3C);
+    g.fillRect(28, 8, 3, 22);
+    g.fillStyle(0x441188);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.generateTexture('player_hawkeye', 32, 48);
+    g.clear();
+
+    // Spider-Man (32x48) — red head/torso/arms, blue legs, white eyes
+    g.fillStyle(0xCC0000);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0x0033CC);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.fillStyle(0xFFFFFF);
+    g.fillEllipse(11, 7, 8, 6);
+    g.fillEllipse(21, 7, 8, 6);
+    g.fillStyle(0xAA0000);
+    g.fillRect(3, 20, 26, 1);
+    g.fillRect(3, 26, 26, 1);
+    g.generateTexture('player_spidey', 32, 48);
+    g.clear();
+
+    // Black Panther (32x48) — near-black suit, purple visor and claw marks
+    g.fillStyle(0x0A0A0A);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0x8800CC);
+    g.fillRect(5, 5, 22, 3);
+    g.fillRect(3, 24, 26, 2);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.fillStyle(0x5500AA);
+    g.fillRect(10, 17, 1, 7);
+    g.fillRect(13, 16, 1, 8);
+    g.fillRect(16, 15, 1, 9);
+    g.fillRect(19, 16, 1, 8);
+    g.fillRect(22, 17, 1, 7);
+    g.generateTexture('player_panther', 32, 48);
+    g.clear();
+
+    // Scarlet Witch (32x48) — deep red costume, magenta crown, glowing hands
+    g.fillStyle(0x880022);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillRect(0, 15, 3, 17);
+    g.fillRect(29, 15, 3, 17);
+    g.fillStyle(0xFF2288);
+    g.fillRect(10, 0, 12, 4);
+    g.fillRect(12, 4, 2, 4);
+    g.fillRect(18, 4, 2, 4);
+    g.fillRect(0, 27, 3, 4);
+    g.fillRect(29, 27, 3, 4);
+    g.fillStyle(0xFFAACC);
+    g.fillRect(5, 5, 22, 4);
+    g.fillStyle(0xCC0044);
+    g.fillRect(4, 44, 11, 4);
+    g.fillRect(17, 44, 11, 4);
+    g.generateTexture('player_witch', 32, 48);
+    g.clear();
+
+    // Doctor Strange (32x48) — blue suit, red cloak, green Eye of Agamotto
+    g.fillStyle(0x1A3A8A);
+    g.fillCircle(16, 8, 7);
+    g.fillRect(3, 14, 26, 20);
+    g.fillRect(4, 34, 11, 14);
+    g.fillRect(17, 34, 11, 14);
+    g.fillStyle(0xCC0000);
+    g.fillRect(0, 14, 3, 20);
+    g.fillRect(29, 14, 3, 20);
+    g.fillRect(3, 32, 26, 14);
+    g.fillStyle(0xAABBDD);
+    g.fillRect(6, 5, 20, 4);
+    g.fillStyle(0x00CC44);
+    g.fillCircle(16, 20, 4);
+    g.fillStyle(0x00FF88);
+    g.fillCircle(16, 20, 2);
+    g.generateTexture('player_strange', 32, 48);
+
     g.destroy();
   }
 

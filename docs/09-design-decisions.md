@@ -389,6 +389,53 @@ The stop hook in `.claude/settings.json` runs a bash `git commit` command — it
 
 ---
 
+---
+
+## Session 5 — More Enemies + Avengers Select
+
+---
+
+### More Fireballs and Sky Zombies
+
+**What was asked:** "Can you add a bit more fire balls and zombies"
+
+**What was built**
+Fireball timer reduced from 1500ms to 900ms (40% faster). Added a 35% chance to drop 2 fireballs per tick instead of 1. Sky zombie timer reduced from 6000ms to 3500ms. Added a 30% chance to drop 2 sky zombies per tick (staggered 80px vertically). Added 10 more platform zombies across all sectors, filling elevated platforms that previously had none — total platform zombie count went from 10 to 20.
+
+**Why this way**
+The existing spawn code was easy to extend: a `count` variable with a random threshold requires minimal changes and keeps the logic readable. Staggering double zombies vertically (80px apart) avoids them spawning on top of each other and clipping. The timers use Phaser's built-in event loop so no external state is needed.
+
+**What was ruled out**
+
+| Option | Why rejected |
+|--------|-------------|
+| Higher base spawn rate with no doubles | Doubles feel more dramatic and punishing without just feeling like lag |
+| Triples or more | Too punishing with no AOE weapon ready; doubles are already a major threat |
+| Spawning only when player is in specific sectors | Over-engineered; random spawning near the player is simpler and fair |
+
+---
+
+### Avengers Character Select Menu
+
+**What was asked:** "can you add a character menu with all the Avengers"
+
+**What was built**
+A new `CharacterScene` with a 5×2 card grid of 10 Avengers. Each hero has a unique procedurally drawn 32×48 texture in `BootScene`. Clicking a card saves the texture key to `localStorage` under `zapnhop_character`. `GameScene._createPlayer()` reads that key and spawns the player with the chosen texture. All characters share the same 32×48 hitbox and identical gameplay — cosmetic only.
+
+**Why this way**
+Procedural textures in `BootScene` keep the zero-asset philosophy intact — no PNG files, no asset loader changes. Cosmetic-only differentiation avoids the need to rebalance weapons, damage, or speed for 10 different characters. `localStorage` persistence means your choice survives between sessions without any server.
+
+**What was ruled out**
+
+| Option | Why rejected |
+|--------|-------------|
+| Unique abilities per hero | Adds significant balancing work; user asked for a character menu, not a class system |
+| Real image assets | Would require an art pipeline and file hosting; inconsistent with current zero-asset approach |
+| Character unlocks (earn with stars) | Adds lock/unlock logic; user didn't ask for a progression gate |
+| Separate stat profiles (Hulk is slower but tankier) | Too much rebalancing work for a cosmetic request |
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

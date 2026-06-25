@@ -24,9 +24,10 @@ class MenuScene extends Phaser.Scene {
     }).setOrigin(0, 0.5);
 
     // Buttons
-    this._addBtn(W / 2, 215, 'PLAY',         '#44aa44', '#66dd66', () => this.scene.start('GameScene'));
-    this._addBtn(W / 2, 290, 'ITEM SHOP',    '#885500', '#BB8800', () => this.scene.start('ShopScene'));
-    this._addBtn(W / 2, 355, 'PREMIUM SHOP', '#330055', '#7722AA', () => this.scene.start('PremiumShopScene'));
+    this._addBtn(W / 2, 200, 'PLAY',             '#44aa44', '#66dd66', () => this.scene.start('GameScene'));
+    this._addBtn(W / 2, 268, 'CHARACTERS',        '#004488', '#0066CC', () => this.scene.start('CharacterScene'));
+    this._addBtn(W / 2, 336, 'ITEM SHOP',         '#885500', '#BB8800', () => this.scene.start('ShopScene'));
+    this._addBtn(W / 2, 404, 'PREMIUM SHOP',      '#330055', '#7722AA', () => this.scene.start('PremiumShopScene'));
 
     // Instructions
     this.add.text(W / 2, H - 38, 'Arrow keys or WASD to move  |  Space / Up to jump  |  Click to shoot', {
