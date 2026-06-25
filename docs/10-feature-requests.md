@@ -433,6 +433,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #36 — Higher Platforms Across the Level
+
+**Asked:** "Can you add some higher platforms"
+**Status:** ✓ Done
+**What was built:** 11 new platforms added at y=70–180, spread across the full level (x=500 through x=7500). They sit 75–130px above the nearest existing lower platform, forming an upper route that stays above the rising lava longer.
+**Files changed:** `src/scenes/GameScene.js` (platforms array)
+**Design note:** → [Session 7 — Higher Platforms](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

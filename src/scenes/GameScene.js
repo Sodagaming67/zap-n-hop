@@ -203,6 +203,18 @@ class GameScene extends Phaser.Scene {
       { x: 7870, y: 225, w: 3 },
       { x: 7870, y: 160, w: 2 },
       { x: 7870, y: 95,  w: 2 },
+      // Higher platforms — upper route above rising lava
+      { x: 500,  y: 180, w: 2 },
+      { x: 1000, y: 160, w: 2 },
+      { x: 1400, y: 140, w: 2 },
+      { x: 2500, y: 155, w: 2 },
+      { x: 2900, y: 130, w: 2 },
+      { x: 3320, y: 105, w: 2 },
+      { x: 4080, y: 90,  w: 2 },
+      { x: 5000, y: 85,  w: 2 },
+      { x: 6020, y: 70,  w: 2 },
+      { x: 7300, y: 150, w: 2 },
+      { x: 7500, y: 100, w: 2 },
     ];
     this.platforms = this.physics.add.staticGroup();
     platforms.forEach(({ x, y, w }) => {

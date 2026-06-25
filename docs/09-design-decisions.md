@@ -703,6 +703,22 @@ A 8000×200px rectangle is placed at y=660 (below the world) with a dynamic phys
 
 ---
 
+### Higher Platforms Across the Level
+
+**What was asked:** "Can you add some higher platforms"
+
+**What was built**
+11 new platforms at y=70–180, one roughly every 500–700px across the level. Each sits about 75–130px above the nearest existing platform below it, so any character can jump up to it as a stepping stone.
+
+**Why this way**
+The existing level had no platforms above y=225 until x=4000, meaning the rising lava (which reaches y=225 in about 50 seconds) would cut off the entire first half with no escape. These platforms give players an upper route to stay ahead of the lava. Gaps between them are sized for the weakest jump (Black Widow at 560 force), so all characters can make the route.
+
+**What was ruled out**
+- A single unbroken high shelf — would trivialise the lava mechanic; the gaps keep it a challenge.
+- Matching the density of mid-level platforms — too cluttered at the top of the screen.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
