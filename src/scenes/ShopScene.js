@@ -16,13 +16,13 @@ class ShopScene extends Phaser.Scene {
       color: '#FFD700', stroke: '#000000', strokeThickness: 6
     }).setOrigin(0.5);
 
-    this.add.text(400, 92, 'Spend Stars and Dots collected in-game to unlock permanent upgrades', {
-      fontSize: '12px', fontFamily: 'Arial', color: '#777777'
+    this.add.text(400, 92, 'Items last ONE run — stock up before you play!', {
+      fontSize: '13px', fontFamily: 'Arial', color: '#888888'
     }).setOrigin(0.5);
 
     // Currency panel
-    this.add.rectangle(400, 122, 340, 34, 0x1A0900).setStrokeStyle(1, 0x555555);
     const { stars, dots } = this._getCurrencies();
+    this.add.rectangle(400, 122, 340, 34, 0x1A0900).setStrokeStyle(1, 0x555555);
     this.add.text(248, 122, `★  ${stars} Stars`, {
       fontSize: '16px', fontFamily: 'Arial Black', color: '#FFD700',
       stroke: '#000', strokeThickness: 3
@@ -34,11 +34,11 @@ class ShopScene extends Phaser.Scene {
 
     // Item rows
     const items = [
-      { id: 'health_upgrade', name: 'Health Upgrade',  desc: '+25 Max HP every run',             cost: 10, currency: 'dots'  },
-      { id: 'speed_boost',    name: 'Speed Boost',      desc: 'Move 20% faster every run',        cost: 15, currency: 'dots'  },
-      { id: 'unibeam_plus',   name: 'Unibeam+',         desc: '+5 Unibeam ammo every run',        cost: 5,  currency: 'stars' },
-      { id: 'extra_sbomb',    name: 'Extra S-Bomb',      desc: '+1 Smartbomb charge every run',    cost: 8,  currency: 'stars' },
-      { id: 'iron_shield',    name: 'Iron Shield',       desc: 'Start each run with 3s invincibility', cost: 12, currency: 'stars' },
+      { id: 'health_upgrade', name: 'Health Upgrade',  desc: '+25 Max HP for one run',              cost: 10, currency: 'dots'  },
+      { id: 'speed_boost',    name: 'Speed Boost',      desc: 'Move 20% faster for one run',         cost: 15, currency: 'dots'  },
+      { id: 'unibeam_plus',   name: 'Unibeam+',         desc: '+5 Unibeam ammo for one run',         cost: 5,  currency: 'stars' },
+      { id: 'extra_sbomb',    name: 'Extra S-Bomb',      desc: '+1 Smartbomb charge for one run',     cost: 8,  currency: 'stars' },
+      { id: 'iron_shield',    name: 'Iron Shield',       desc: 'Start with 3s invincibility, one run',cost: 12, currency: 'stars' },
     ];
     items.forEach((item, i) => this._buildItemRow(item, 162 + i * 54));
 
@@ -57,26 +57,26 @@ class ShopScene extends Phaser.Scene {
     return {
       stars: parseInt(localStorage.getItem('zapnhop_stars') || '0'),
       dots:  parseInt(localStorage.getItem('zapnhop_dots')  || '0'),
-      owned: JSON.parse(localStorage.getItem('zapnhop_owned') || '[]'),
+      owned: JSON.parse(localStorage.getItem('zapnhop_owned') || '{}'),
     };
   }
 
   _buildItemRow(item, y) {
     const { stars, dots, owned } = this._getCurrencies();
-    const isOwned = owned.includes(item.id);
-    const sym = item.currency === 'stars' ? '★' : '●';
+    const count    = owned[item.id] || 0;
+    const sym      = item.currency === 'stars' ? '★' : '●';
     const symColor = item.currency === 'stars' ? '#FFD700' : '#44AAFF';
-    const balance = item.currency === 'stars' ? stars : dots;
+    const balance  = item.currency === 'stars' ? stars : dots;
     const canAfford = balance >= item.cost;
 
-    // Row background
-    this.add.rectangle(395, y, 726, 50, isOwned ? 0x0D1F0D : 0x1A0900, 0.95)
-      .setStrokeStyle(1, isOwned ? 0x2A4A2A : 0x2E2200);
+    // Row tint — highlight rows that have items in bag
+    this.add.rectangle(395, y, 726, 50, count > 0 ? 0x1A1500 : 0x1A0900, 0.95)
+      .setStrokeStyle(1, count > 0 ? 0x4A3A00 : 0x2E2200);
 
     // Item name
     this.add.text(40, y - 10, item.name, {
-      fontSize: '15px', fontFamily: 'Arial Black',
-      color: isOwned ? '#66FF88' : '#FFFFFF', stroke: '#000', strokeThickness: 2
+      fontSize: '15px', fontFamily: 'Arial Black', color: '#FFFFFF',
+      stroke: '#000', strokeThickness: 2
     }).setOrigin(0, 0);
 
     // Description
@@ -84,23 +84,25 @@ class ShopScene extends Phaser.Scene {
       fontSize: '11px', fontFamily: 'Arial', color: '#888888'
     }).setOrigin(0, 0);
 
-    // Cost display
-    this.add.text(557, y, `${sym}  ${item.cost}`, {
+    // Cost
+    this.add.text(518, y, `${sym}  ${item.cost}`, {
       fontSize: '18px', fontFamily: 'Arial Black',
-      color: isOwned ? '#444444' : (canAfford ? symColor : '#993333'),
+      color: canAfford ? symColor : '#993333',
       stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5, 0.5);
 
-    if (isOwned) {
-      this.add.rectangle(688, y, 110, 34, 0x0A2A0A).setStrokeStyle(2, 0x44AA44);
-      this.add.text(688, y, 'OWNED', {
-        fontSize: '14px', fontFamily: 'Arial Black', color: '#44FF88',
+    // "In bag" count badge — only shown when count > 0
+    if (count > 0) {
+      this.add.rectangle(607, y, 68, 26, 0x2A2200).setStrokeStyle(1, 0x886600);
+      this.add.text(607, y, `x${count} ready`, {
+        fontSize: '11px', fontFamily: 'Arial Black', color: '#FFCC00',
         stroke: '#000', strokeThickness: 2
       }).setOrigin(0.5, 0.5);
-    } else {
-      this._addButton(688, y, 'BUY', 0x334411, 0xAACC00, '#CCFF00', '#FFFF44',
-        () => this._buyItem(item), 110, 34);
     }
+
+    // BUY button — always available
+    this._addButton(700, y, 'BUY', 0x334411, 0xAACC00, '#CCFF00', '#FFFF44',
+      () => this._buyItem(item), 90, 34);
   }
 
   _addButton(x, y, label, fill, stroke, color, hoverColor, callback, w = 122, h = 36) {
@@ -120,18 +122,17 @@ class ShopScene extends Phaser.Scene {
 
   _buyItem(item) {
     const { stars, dots, owned } = this._getCurrencies();
-    if (owned.includes(item.id)) { this._showMsg('Already owned!', '#FFAA00'); return; }
-
     const balance = item.currency === 'stars' ? stars : dots;
+
     if (balance < item.cost) {
       this._showMsg(`Not enough ${item.currency}! Need ${item.cost} — collect more in-game.`, '#FF4444');
       return;
     }
 
     localStorage.setItem(`zapnhop_${item.currency}`, balance - item.cost);
-    owned.push(item.id);
+    owned[item.id] = (owned[item.id] || 0) + 1;
     localStorage.setItem('zapnhop_owned', JSON.stringify(owned));
-    this._showMsg('Purchased! Refreshing...', '#00FF88');
+    this._showMsg(`Purchased! You have ${owned[item.id]}x for your next run.`, '#00FF88');
     this.time.delayedCall(1200, () => this.scene.restart());
   }
 

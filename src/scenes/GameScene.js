@@ -11,12 +11,20 @@ class GameScene extends Phaser.Scene {
     this.starWallet = parseInt(localStorage.getItem('zapnhop_stars') || '0');
     this.dotWallet  = parseInt(localStorage.getItem('zapnhop_dots')  || '0');
 
-    // Apply shop upgrades
-    const owned = JSON.parse(localStorage.getItem('zapnhop_owned') || '[]');
-    this.maxHealth   = owned.includes('health_upgrade') ? 125 : 100;
+    // Apply consumable shop items (each lasts ONE run), then remove them
+    const owned = JSON.parse(localStorage.getItem('zapnhop_owned') || '{}');
+    const has = id => (owned[id] || 0) > 0;
+    this.maxHealth   = has('health_upgrade') ? 125 : 100;
     this.health      = this.maxHealth;
-    this._moveSpeed  = owned.includes('speed_boost')    ? 265 : 220;
-    this._startShield = owned.includes('iron_shield');
+    this._moveSpeed  = has('speed_boost') ? 265 : 220;
+    this._startShield = has('iron_shield');
+
+    // Consume one of each item that was used this run
+    ['health_upgrade', 'speed_boost', 'unibeam_plus', 'extra_sbomb', 'iron_shield'].forEach(id => {
+      if (owned[id] > 0) owned[id]--;
+      if (owned[id] <= 0) delete owned[id];
+    });
+    localStorage.setItem('zapnhop_owned', JSON.stringify(owned));
 
     // Projectile groups
     this.arrows    = this.physics.add.group();
@@ -25,14 +33,14 @@ class GameScene extends Phaser.Scene {
     this.repulsors = this.physics.add.group();
     this.unibeams  = this.physics.add.group();
 
-    // Inventory — ammo adjusted by shop upgrades
+    // Inventory — ammo boosted if item was in bag this run
     this.inventory = {
       current: 'missile',
       weapons: {
-        missile:   { label: 'MISSILE',  key: '1', ammo: Infinity,                             cooldown: 200,  lastFired: 0, color: '#ff4444' },
-        repulsor:  { label: 'REPULSOR', key: '2', ammo: Infinity,                             cooldown: 350,  lastFired: 0, color: '#44aaff' },
-        unibeam:   { label: 'UNIBEAM',  key: '3', ammo: owned.includes('unibeam_plus') ? 20 : 15, cooldown: 700, lastFired: 0, color: '#ffcc00' },
-        smartbomb: { label: 'S-BOMB',   key: '4', ammo: owned.includes('extra_sbomb')  ? 4  : 3,  cooldown: 2000, lastFired: 0, color: '#ff8800' },
+        missile:   { label: 'MISSILE',  key: '1', ammo: Infinity,               cooldown: 200,  lastFired: 0, color: '#ff4444' },
+        repulsor:  { label: 'REPULSOR', key: '2', ammo: Infinity,               cooldown: 350,  lastFired: 0, color: '#44aaff' },
+        unibeam:   { label: 'UNIBEAM',  key: '3', ammo: has('unibeam_plus') ? 20 : 15, cooldown: 700, lastFired: 0, color: '#ffcc00' },
+        smartbomb: { label: 'S-BOMB',   key: '4', ammo: has('extra_sbomb')  ? 4  : 3,  cooldown: 2000, lastFired: 0, color: '#ff8800' },
       }
     };
 
