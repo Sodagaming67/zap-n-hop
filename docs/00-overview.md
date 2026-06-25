@@ -17,6 +17,8 @@ Read them in order — each one builds on the last.
 | [06-game-scene.md](06-game-scene.md) | The main gameplay — the biggest file |
 | [07-ui-scene.md](07-ui-scene.md) | How the score and lives display works |
 | [08-key-concepts.md](08-key-concepts.md) | The big ideas behind all of it |
+| [09-design-decisions.md](09-design-decisions.md) | Why each feature was built the way it was — and what was ruled out |
+| [10-feature-requests.md](10-feature-requests.md) | Every feature request made, numbered and linked to the design decisions |
 
 ---
 
