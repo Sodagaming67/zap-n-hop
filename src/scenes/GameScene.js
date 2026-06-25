@@ -3,11 +3,20 @@ class GameScene extends Phaser.Scene {
 
   create() {
     this.score = 0;
-    this.health = 100;
-    this.maxHealth = 100;
     this.isGameOver = false;
     this.invincible = false;
     this.lastCheckpoint = { x: 64, y: 400 };
+
+    // Wallets — persist across sessions via localStorage
+    this.starWallet = parseInt(localStorage.getItem('zapnhop_stars') || '0');
+    this.dotWallet  = parseInt(localStorage.getItem('zapnhop_dots')  || '0');
+
+    // Apply shop upgrades
+    const owned = JSON.parse(localStorage.getItem('zapnhop_owned') || '[]');
+    this.maxHealth   = owned.includes('health_upgrade') ? 125 : 100;
+    this.health      = this.maxHealth;
+    this._moveSpeed  = owned.includes('speed_boost')    ? 265 : 220;
+    this._startShield = owned.includes('iron_shield');
 
     // Projectile groups
     this.arrows    = this.physics.add.group();
@@ -16,14 +25,14 @@ class GameScene extends Phaser.Scene {
     this.repulsors = this.physics.add.group();
     this.unibeams  = this.physics.add.group();
 
-    // Inventory
+    // Inventory — ammo adjusted by shop upgrades
     this.inventory = {
       current: 'missile',
       weapons: {
-        missile:   { label: 'MISSILE',  key: '1', ammo: Infinity, cooldown: 200,  lastFired: 0, color: '#ff4444' },
-        repulsor:  { label: 'REPULSOR', key: '2', ammo: Infinity, cooldown: 350,  lastFired: 0, color: '#44aaff' },
-        unibeam:   { label: 'UNIBEAM',  key: '3', ammo: 15,       cooldown: 700,  lastFired: 0, color: '#ffcc00' },
-        smartbomb: { label: 'S-BOMB',   key: '4', ammo: 3,        cooldown: 2000, lastFired: 0, color: '#ff8800' },
+        missile:   { label: 'MISSILE',  key: '1', ammo: Infinity,                             cooldown: 200,  lastFired: 0, color: '#ff4444' },
+        repulsor:  { label: 'REPULSOR', key: '2', ammo: Infinity,                             cooldown: 350,  lastFired: 0, color: '#44aaff' },
+        unibeam:   { label: 'UNIBEAM',  key: '3', ammo: owned.includes('unibeam_plus') ? 20 : 15, cooldown: 700, lastFired: 0, color: '#ffcc00' },
+        smartbomb: { label: 'S-BOMB',   key: '4', ammo: owned.includes('extra_sbomb')  ? 4  : 3,  cooldown: 2000, lastFired: 0, color: '#ff8800' },
       }
     };
 
@@ -33,6 +42,15 @@ class GameScene extends Phaser.Scene {
     this._setupCollisions();
     this._setupCamera();
     this._setupInput();
+
+    // Iron Shield: start run with brief invincibility
+    if (this._startShield) {
+      this.invincible = true;
+      this.player.setAlpha(0.5);
+      this.time.delayedCall(3000, () => {
+        if (!this.isGameOver) { this.invincible = false; this.player.setAlpha(1); }
+      });
+    }
 
     this.time.addEvent({ delay: 1500, loop: true, callback: this._spawnFireball,  callbackScope: this });
     this.time.addEvent({ delay: 6000, loop: true, callback: this._spawnSkyZombie, callbackScope: this });
@@ -307,11 +325,17 @@ class GameScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.coins, (_, coin) => {
       coin.destroy(); this.score += 10;
+      this.dotWallet++;
+      localStorage.setItem('zapnhop_dots', this.dotWallet);
       this.events.emit('scoreUpdate', this.score);
+      this.events.emit('currencyUpdate', this.starWallet, this.dotWallet);
     });
     this.physics.add.overlap(this.player, this.stars, (_, star) => {
       star.destroy(); this.score += 25;
+      this.starWallet++;
+      localStorage.setItem('zapnhop_stars', this.starWallet);
       this.events.emit('scoreUpdate', this.score);
+      this.events.emit('currencyUpdate', this.starWallet, this.dotWallet);
     });
 
     this.physics.add.overlap(this.player, this.enemies, (player, enemy) => {
@@ -415,9 +439,9 @@ class GameScene extends Phaser.Scene {
     const onGround = this.player.body.blocked.down;
 
     if (left.isDown || this.wasd.left.isDown) {
-      this.player.setVelocityX(-220); this.player.setFlipX(true);
+      this.player.setVelocityX(-this._moveSpeed); this.player.setFlipX(true);
     } else if (right.isDown || this.wasd.right.isDown) {
-      this.player.setVelocityX(220); this.player.setFlipX(false);
+      this.player.setVelocityX(this._moveSpeed); this.player.setFlipX(false);
     } else {
       this.player.setVelocityX(0);
     }

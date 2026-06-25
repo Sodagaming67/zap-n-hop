@@ -22,6 +22,24 @@ class UIScene extends Phaser.Scene {
       color: '#ffffff', stroke: '#000000', strokeThickness: 2
     }).setOrigin(0.5, 0.5);
 
+    // Star and dot wallet counts — below HP bar
+    this.add.text(619, 46, '★', {
+      fontSize: '13px', fontFamily: 'Arial', color: '#FFD700',
+      stroke: '#000000', strokeThickness: 2
+    }).setOrigin(0, 0.5);
+    this.starText = this.add.text(634, 46, '0', {
+      fontSize: '13px', fontFamily: 'Arial Black', color: '#FFD700',
+      stroke: '#000000', strokeThickness: 2
+    }).setOrigin(0, 0.5);
+    this.add.text(676, 46, '●', {
+      fontSize: '13px', fontFamily: 'Arial', color: '#44AAFF',
+      stroke: '#000000', strokeThickness: 2
+    }).setOrigin(0, 0.5);
+    this.dotText = this.add.text(691, 46, '0', {
+      fontSize: '13px', fontFamily: 'Arial Black', color: '#44AAFF',
+      stroke: '#000000', strokeThickness: 2
+    }).setOrigin(0, 0.5);
+
     // Active weapon label — top center
     this.weaponLabel = this.add.text(400, 14, 'MISSILE', {
       fontSize: '20px', fontFamily: 'Arial Black',
@@ -39,6 +57,10 @@ class UIScene extends Phaser.Scene {
       this.hpBar.setFillStyle(pct > 0.6 ? 0x00cc44 : pct > 0.3 ? 0xffaa00 : 0xff2200);
       this.hpText.setText(`${hp}/${maxHp}`);
     });
+    this.gameScene.events.on('currencyUpdate', (stars, dots) => {
+      this.starText.setText(String(stars));
+      this.dotText.setText(String(dots));
+    });
     this.gameScene.events.on('weaponSwitch',   inv => this._refresh(inv));
     this.gameScene.events.on('inventoryUpdate',inv => this._refresh(inv));
 
@@ -47,6 +69,8 @@ class UIScene extends Phaser.Scene {
 
     // Seed initial state
     this._refresh(this.gameScene.inventory);
+    this.starText.setText(String(this.gameScene.starWallet));
+    this.dotText.setText(String(this.gameScene.dotWallet));
   }
 
   _buildInventoryBar() {
