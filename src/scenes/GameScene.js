@@ -586,7 +586,7 @@ class GameScene extends Phaser.Scene {
       this.cameras.main.shake(300, 0.022);
       const ix = this.player.x;
       this.enemies.getChildren().slice().forEach(e => {
-        if (e.active && Math.abs(e.x - ix) < 160) {
+        if (e.active && Math.abs(e.x - ix) < 110) {
           if (e.shootTimer) e.shootTimer.remove();
           e.destroy(); this.score += 35;
         }

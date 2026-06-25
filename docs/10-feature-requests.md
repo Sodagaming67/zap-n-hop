@@ -374,6 +374,15 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #30 — Hulk Smash Radius Reduced
+
+**Asked:** "Can you slightly lower the hulks stomp radius"
+**Status:** ✓ Done
+**What was built:** Ground smash AOE radius reduced from 160px to 110px.
+**Files changed:** `src/scenes/GameScene.js` (Hulk smash overlap check)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
