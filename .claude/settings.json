@@ -1,4 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(netstat*)",
+      "Bash(taskkill*)",
+      "Bash(python*http.server*)",
+      "Bash(cmd.exe*start*localhost*)"
+    ]
+  },
   "hooks": {
     "Stop": [
       {
