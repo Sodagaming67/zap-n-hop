@@ -3,9 +3,11 @@ class GameScene extends Phaser.Scene {
 
   create() {
     this.score = 0;
-    this.lives = 3;
+    this.health = 100;
+    this.maxHealth = 100;
     this.isGameOver = false;
     this.invincible = false;
+    this.lastCheckpoint = { x: 64, y: 400 };
 
     // Projectile groups
     this.arrows    = this.physics.add.group();
@@ -189,6 +191,25 @@ class GameScene extends Phaser.Scene {
     this.stars = this.physics.add.staticGroup();
     stars.forEach(({ x, y }) => this.stars.create(x, y, 'star'));
 
+    // Checkpoints — 4 spread through the level
+    const checkpointData = [
+      { x: 1720, y: 435 }, { x: 3450, y: 435 },
+      { x: 5460, y: 435 }, { x: 6980, y: 435 },
+    ];
+    this.checkpoints = this.physics.add.staticGroup();
+    checkpointData.forEach(({ x, y }) => {
+      const cp = this.checkpoints.create(x, y, 'checkpoint');
+      cp.activated = false;
+    });
+
+    // Health regen pickups — 4 scattered through the level
+    const regenData = [
+      { x: 900, y: 440 }, { x: 2700, y: 440 },
+      { x: 5000, y: 440 }, { x: 7050, y: 440 },
+    ];
+    this.healthRegens = this.physics.add.staticGroup();
+    regenData.forEach(({ x, y }) => this.healthRegens.create(x, y, 'healthregen'));
+
     // End flag
     const flagGfx = this.add.graphics();
     flagGfx.fillStyle(0x888888); flagGfx.fillRect(0, 0, 4, 60);
@@ -239,6 +260,7 @@ class GameScene extends Phaser.Scene {
     enemyData.forEach(({ x, y, min, max }) => {
       const e = this.enemies.create(x, y, 'enemy');
       e.setVelocityX(80);
+      e.patrolSpeed = 80;
       e.setCollideWorldBounds(true);
       e.patrolMin = min; e.patrolMax = max;
       e.setBounce(0); e.patrolActive = true;
@@ -246,6 +268,34 @@ class GameScene extends Phaser.Scene {
         delay: 2000 + Math.random() * 1500, loop: true,
         callback: () => this._skeletonShoot(e), callbackScope: this
       });
+    });
+
+    // Platform zombies — spawn on elevated platforms across all sectors
+    const platformZombieData = [
+      // Sector 1
+      { x: 514,  y: 260, min: 460,  max: 570,  speed: 55 },
+      { x: 1246, y: 310, min: 1160, max: 1330, speed: 55 },
+      // Sector 2
+      { x: 2084, y: 270, min: 2030, max: 2200, speed: 60 },
+      { x: 2764, y: 300, min: 2710, max: 2820, speed: 60 },
+      // Sector 3
+      { x: 3944, y: 205, min: 3890, max: 4000, speed: 65 },
+      { x: 4794, y: 225, min: 4740, max: 4910, speed: 65 },
+      // Sector 4
+      { x: 5744, y: 235, min: 5690, max: 5800, speed: 70 },
+      { x: 6434, y: 265, min: 6380, max: 6490, speed: 70 },
+      // Sector 5
+      { x: 7334, y: 235, min: 7280, max: 7390, speed: 75 },
+      { x: 7744, y: 245, min: 7690, max: 7860, speed: 75 },
+    ];
+    platformZombieData.forEach(({ x, y, min, max, speed }) => {
+      const z = this.enemies.create(x, y, 'zombie');
+      z.setVelocityX(speed);
+      z.patrolSpeed = speed;
+      z.setCollideWorldBounds(true);
+      z.patrolMin = min; z.patrolMax = max;
+      z.setBounce(0); z.patrolActive = true;
+      z.shootTimer = null;
     });
   }
 
@@ -274,7 +324,7 @@ class GameScene extends Phaser.Scene {
         this.score += 50;
         this.events.emit('scoreUpdate', this.score);
       } else {
-        this._loseLife();
+        this._takeDamage(30);
       }
     });
 
@@ -282,14 +332,31 @@ class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.arrows, this.platforms, a => a.destroy());
     this.physics.add.overlap(this.player, this.arrows, (_, arrow) => {
       if (this.isGameOver || this.invincible) return;
-      arrow.destroy(); this._loseLife();
+      arrow.destroy(); this._takeDamage(20);
     });
 
     // Fireball — destroys on platform, hurts player
     this.physics.add.collider(this.fireballs, this.platforms, fb => fb.destroy());
     this.physics.add.overlap(this.player, this.fireballs, (_, fb) => {
       if (this.isGameOver || this.invincible) return;
-      fb.destroy(); this._loseLife();
+      fb.destroy(); this._takeDamage(25);
+    });
+
+    // Checkpoints — activate on touch, save respawn position
+    this.physics.add.overlap(this.player, this.checkpoints, (_, cp) => {
+      if (!cp.activated) {
+        cp.activated = true;
+        cp.setTexture('checkpoint_active');
+        cp.refreshBody();
+        this.lastCheckpoint = { x: cp.x, y: 400 };
+        this.cameras.main.flash(200, 255, 215, 0);
+      }
+    });
+
+    // Health regen pickups
+    this.physics.add.overlap(this.player, this.healthRegens, (_, pkg) => {
+      pkg.destroy();
+      this._heal(35);
     });
 
     // Missile — destroys on platform/enemy
@@ -369,10 +436,12 @@ class GameScene extends Phaser.Scene {
     this.enemies.getChildren().forEach(e => {
       if (!e.active) return;
       if (e.patrolActive) {
-        if (e.x >= e.patrolMax) e.setVelocityX(-80);
-        if (e.x <= e.patrolMin) e.setVelocityX(80);
+        const spd = e.patrolSpeed || 80;
+        if (e.x >= e.patrolMax) e.setVelocityX(-spd);
+        if (e.x <= e.patrolMin) e.setVelocityX(spd);
       } else if (e.body && e.body.blocked.down) {
         e.patrolActive = true;
+        e.patrolSpeed = 60;
         e.patrolMin = Math.max(0, e.x - 120);
         e.patrolMax = Math.min(8000, e.x + 120);
         e.setVelocityX(60);
@@ -394,7 +463,7 @@ class GameScene extends Phaser.Scene {
       if (a.active && (a.x < -50 || a.x > this.player.x + 950)) a.destroy();
     });
 
-    if (this.player.y > 520) this._loseLife();
+    if (this.player.y > 520) this._playerDied();
   }
 
   // ─── Weapon system ─────────────────────────────────────────────────────────
@@ -492,18 +561,39 @@ class GameScene extends Phaser.Scene {
 
   // ─── Life / Game state ─────────────────────────────────────────────────────
 
-  _loseLife() {
+  _takeDamage(amount) {
     if (this.isGameOver || this.invincible) return;
-    this.lives--;
-    this.events.emit('livesUpdate', this.lives);
-    if (this.lives <= 0) {
-      this._gameOver();
+    this.health = Math.max(0, this.health - amount);
+    this.events.emit('healthUpdate', this.health, this.maxHealth);
+    if (this.health <= 0) {
+      this._playerDied();
     } else {
-      this.player.setPosition(64, 400); this.player.setVelocity(0, 0);
       this.invincible = true;
       this.player.setAlpha(0.5);
-      this.time.delayedCall(1500, () => { this.invincible = false; this.player.setAlpha(1); });
+      this.time.delayedCall(1500, () => {
+        if (!this.isGameOver) { this.invincible = false; this.player.setAlpha(1); }
+      });
     }
+  }
+
+  _playerDied() {
+    if (this.isGameOver) return;
+    this.cameras.main.flash(400, 180, 0, 0);
+    this.health = this.maxHealth;
+    this.events.emit('healthUpdate', this.health, this.maxHealth);
+    this.player.setPosition(this.lastCheckpoint.x, this.lastCheckpoint.y);
+    this.player.setVelocity(0, 0);
+    this.invincible = true;
+    this.player.setAlpha(0.5);
+    this.time.delayedCall(1500, () => {
+      if (!this.isGameOver) { this.invincible = false; this.player.setAlpha(1); }
+    });
+  }
+
+  _heal(amount) {
+    this.health = Math.min(this.maxHealth, this.health + amount);
+    this.events.emit('healthUpdate', this.health, this.maxHealth);
+    this.cameras.main.flash(150, 0, 180, 50);
   }
 
   _gameOver() {

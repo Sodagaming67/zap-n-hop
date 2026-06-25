@@ -133,6 +133,40 @@ class BootScene extends Phaser.Scene {
     }
     g.fillPoints(starPoints, true);
     g.generateTexture('star', 16, 16);
+    g.clear();
+
+    // checkpoint flag — inactive (gray) (28x48)
+    g.fillStyle(0x666666);
+    g.fillRect(12, 0, 4, 48);
+    g.fillStyle(0xAAAAAA);
+    g.fillRect(16, 4, 14, 10);
+    g.fillRect(16, 14, 14, 1);
+    g.generateTexture('checkpoint', 28, 48);
+    g.clear();
+
+    // checkpoint flag — active (gold) (28x48)
+    g.fillStyle(0x666666);
+    g.fillRect(12, 0, 4, 48);
+    g.fillStyle(0xFFD700);
+    g.fillRect(16, 4, 14, 10);
+    g.fillStyle(0xFF8800);
+    g.fillRect(16, 14, 14, 1);
+    g.fillCircle(23, 9, 3);
+    g.generateTexture('checkpoint_active', 28, 48);
+    g.clear();
+
+    // health regen orb (24x24 green glowing cross)
+    g.fillStyle(0x004400);
+    g.fillCircle(12, 12, 12);
+    g.fillStyle(0x00AA22);
+    g.fillCircle(12, 12, 9);
+    g.fillStyle(0x00FF44);
+    g.fillRect(5, 9, 14, 6);
+    g.fillRect(9, 5, 6, 14);
+    g.fillStyle(0xAAFFBB);
+    g.fillRect(7, 11, 10, 2);
+    g.fillRect(11, 7, 2, 10);
+    g.generateTexture('healthregen', 24, 24);
     g.destroy();
   }
 

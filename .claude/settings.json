@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "cd \"c:/Code/Games/zap-n-hop\" && git add -A && git diff --cached --quiet || git commit -m \"Auto-save: $(git diff --cached --name-only | tr '\\n' ' ' | sed 's/ $//')\"",
+            "statusMessage": "Committing changes..."
+          }
+        ]
+      }
+    ]
+  }
+}

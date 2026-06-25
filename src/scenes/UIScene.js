@@ -10,11 +10,17 @@ class UIScene extends Phaser.Scene {
       color: '#ffffff', stroke: '#000000', strokeThickness: 4
     });
 
-    // Lives — top right
-    this.livesText = this.add.text(784, 16, 'Lives: 3', {
-      fontSize: '24px', fontFamily: 'Arial Black',
-      color: '#ff8888', stroke: '#000000', strokeThickness: 4
-    }).setOrigin(1, 0);
+    // Health bar — top right
+    this.add.text(597, 26, 'HP', {
+      fontSize: '16px', fontFamily: 'Arial Black',
+      color: '#ff4444', stroke: '#000000', strokeThickness: 3
+    }).setOrigin(0, 0.5);
+    this.add.rectangle(701, 26, 165, 18, 0x440000).setOrigin(0.5, 0.5);
+    this.hpBar = this.add.rectangle(619, 26, 165, 18, 0x00cc44).setOrigin(0, 0.5);
+    this.hpText = this.add.text(701, 26, '100/100', {
+      fontSize: '11px', fontFamily: 'Arial Black',
+      color: '#ffffff', stroke: '#000000', strokeThickness: 2
+    }).setOrigin(0.5, 0.5);
 
     // Active weapon label — top center
     this.weaponLabel = this.add.text(400, 14, 'MISSILE', {
@@ -27,7 +33,12 @@ class UIScene extends Phaser.Scene {
 
     // Wire up events
     this.gameScene.events.on('scoreUpdate',    s   => this.scoreText.setText(`Score: ${s}`));
-    this.gameScene.events.on('livesUpdate',    l   => this.livesText.setText(`Lives: ${l}`));
+    this.gameScene.events.on('healthUpdate', (hp, maxHp) => {
+      const pct = hp / maxHp;
+      this.hpBar.setSize(165 * pct, 18);
+      this.hpBar.setFillStyle(pct > 0.6 ? 0x00cc44 : pct > 0.3 ? 0xffaa00 : 0xff2200);
+      this.hpText.setText(`${hp}/${maxHp}`);
+    });
     this.gameScene.events.on('weaponSwitch',   inv => this._refresh(inv));
     this.gameScene.events.on('inventoryUpdate',inv => this._refresh(inv));
 
