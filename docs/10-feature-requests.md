@@ -413,6 +413,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #34 — Black Widow More Visible
+
+**Asked:** "Can you make black widow more visible"
+**Status:** ✓ Done
+**What was built:** Redesigned the Black Widow sprite in `BootScene.js`. Red hair circle behind a skin-tone face circle replaces the all-black head. Suit changed from near-black `0x111111` to dark navy `0x1a1a4a`. Added a teal utility belt stripe. Hourglass brightened from `0xCC0000` to `0xFF2200`. Boots changed to dark navy `0x333355`.
+**Files changed:** `src/scenes/BootScene.js` (player_widow texture)
+**Design note:** → [Session 7 — Black Widow Visibility](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

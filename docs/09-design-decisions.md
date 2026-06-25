@@ -670,6 +670,22 @@ Removing the `lives` key lets the default fallback handle it cleanly — no need
 
 ---
 
+### Black Widow Visibility
+
+**What was asked:** "Can you make black widow more visible"
+
+**What was built**
+Sprite redesigned: dark red hair circle (`0xAA2200`) behind a skin-tone face (`0xF5C5A3`), suit changed from near-black (`0x111111`) to dark navy (`0x1a1a4a`), a teal utility belt stripe (`0x00AACC`) added at the waist, hourglass brightened to `0xFF2200`, boots updated to dark navy.
+
+**Why this way**
+The old design was `0x111111` (essentially black) on a dark game background — almost nothing to see. Adding a face and hair creates an instant recognisable silhouette. Dark navy reads as "dark suit" without blending into the background. The teal stripe gives a midpoint accent so the body isn't one flat colour.
+
+**What was ruled out**
+- Bright suit colour (white/silver) — doesn't fit her character.
+- Just lightening the suit to dark grey — still low contrast against shadows; a hue shift (navy) reads better.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

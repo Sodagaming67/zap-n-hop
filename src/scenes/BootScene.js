@@ -225,19 +225,24 @@ class BootScene extends Phaser.Scene {
     g.generateTexture('player_hulk', 32, 48);
     g.clear();
 
-    // Black Widow (32x48) — black suit, red hourglass belt
-    g.fillStyle(0x111111);
-    g.fillCircle(16, 8, 7);
+    // Black Widow (32x48) — dark navy suit, red hair, skin face, bright red hourglass
+    g.fillStyle(0xAA2200);
+    g.fillCircle(16, 8, 8);
+    g.fillStyle(0xF5C5A3);
+    g.fillCircle(16, 8, 6);
+    g.fillStyle(0x1a1a4a);
     g.fillRect(3, 14, 26, 20);
     g.fillRect(4, 34, 11, 14);
     g.fillRect(17, 34, 11, 14);
     g.fillRect(0, 15, 3, 17);
     g.fillRect(29, 15, 3, 17);
-    g.fillStyle(0xCC0000);
+    g.fillStyle(0x00AACC);
+    g.fillRect(3, 30, 26, 2);
+    g.fillStyle(0xFF2200);
     g.fillRect(13, 19, 6, 3);
     g.fillRect(13, 26, 6, 3);
     g.fillRect(15, 21, 2, 6);
-    g.fillStyle(0x222222);
+    g.fillStyle(0x333355);
     g.fillRect(4, 44, 11, 4);
     g.fillRect(17, 44, 11, 4);
     g.generateTexture('player_widow', 32, 48);
