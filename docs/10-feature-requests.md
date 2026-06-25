@@ -463,6 +463,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #39 — Checkpoints on Higher Platforms
+
+**Asked:** "Can you put all the checkpoints on higher platforms"
+**Status:** ✓ Done
+**What was built:** All four checkpoints moved from ground level (y=435) to high platforms — CP1 at (1432, 108) on the y=140 platform, CP2 at (3352, 73) on y=105, CP3 at (5032, 53) on y=85, CP4 at (7332, 118) on y=150. Respawn handler changed from hardcoded `y: 400` to `y: cp.y` so players respawn at the checkpoint's actual height.
+**Files changed:** `src/scenes/GameScene.js` (checkpointData, lastCheckpoint handler)
+**Design note:** → [Session 7 — Higher Checkpoints](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

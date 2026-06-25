@@ -750,6 +750,21 @@ With rising lava, spawning at ground level gives the player almost no time befor
 
 ---
 
+### Higher Checkpoints
+
+**What was asked:** "Can you put all the checkpoints on higher platforms"
+
+**What was built**
+Checkpoints moved to the nearest high platform for each quarter of the level. Respawn handler updated from hardcoded `y: 400` to `y: cp.y` — the player now respawns at the checkpoint's actual height, not at ground level.
+
+**Why this way**
+With rising lava, a ground-level respawn would drop the player directly into lava mid-run. Respawning at the checkpoint's height means the player is back on a safe high platform immediately. The checkpoint y is calculated as `platform_y - 32` so the flag sprite sits flush on the platform top.
+
+**What was ruled out**
+- Keeping `y: 400` respawn — would be instant death once lava passes y=400.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

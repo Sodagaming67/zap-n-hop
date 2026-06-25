@@ -248,8 +248,8 @@ class GameScene extends Phaser.Scene {
     stars.forEach(({ x, y }) => this.stars.create(x, y, 'star'));
 
     const checkpointData = [
-      { x: 1720, y: 435 }, { x: 3450, y: 435 },
-      { x: 5460, y: 435 }, { x: 6980, y: 435 },
+      { x: 1432, y: 108 }, { x: 3352, y: 73 },
+      { x: 5032, y: 53 },  { x: 7332, y: 118 },
     ];
     this.checkpoints = this.physics.add.staticGroup();
     checkpointData.forEach(({ x, y }) => {
@@ -498,7 +498,7 @@ class GameScene extends Phaser.Scene {
       if (!cp.activated) {
         cp.activated = true;
         cp.setTexture('checkpoint_active'); cp.refreshBody();
-        this.lastCheckpoint = { x: cp.x, y: 400 };
+        this.lastCheckpoint = { x: cp.x, y: cp.y };
         this.cameras.main.flash(200, 255, 215, 0);
       }
     });
