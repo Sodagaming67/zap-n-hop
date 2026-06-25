@@ -651,6 +651,26 @@ PLAY → CharacterScene → GameScene. CharacterScene now has two bottom buttons
 
 ---
 
+## Session 7 — Hawkeye 5 Lives
+
+---
+
+### Hawkeye 5 Lives
+
+**What was asked:** "Can you make Hawkeye have 5 hearts"
+
+**What was built**
+Added `lives: 5` to Hawkeye's `CHAR_STATS` entry in `GameScene.js`. Changed UIScene's heart icon loop from `i < 3` to `i < this.gameScene.lives` so the displayed heart count matches whoever is playing.
+
+**Why this way**
+The same pattern already existed for Thor (`lives: 2`). Extending it to Hawkeye was a one-line stat change. Making the UI loop dynamic means any character can have a custom lives count without touching UIScene again.
+
+**What was ruled out**
+- Hardcoding 5 hearts in UIScene only for Hawkeye — would require a character check in the UI layer, mixing presentation logic with game logic.
+- Changing Hawkeye's HP instead of lives — the user specifically said "hearts", which maps to the lives icons (♥) in the bottom-left, not the HP bar.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

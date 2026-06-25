@@ -54,7 +54,8 @@ class UIScene extends Phaser.Scene {
 
     // Lives hearts — bottom-left below score
     this.livesIcons = [];
-    for (let i = 0; i < 3; i++) {
+    const maxLives = this.gameScene.lives;
+    for (let i = 0; i < maxLives; i++) {
       this.livesIcons.push(this.add.text(16 + i * 22, 46, '♥', {
         fontSize: '20px', fontFamily: 'Arial', color: '#ff4444',
         stroke: '#000000', strokeThickness: 3
