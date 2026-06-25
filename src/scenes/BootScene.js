@@ -288,20 +288,22 @@ class BootScene extends Phaser.Scene {
     g.generateTexture('player_spidey', 32, 48);
     g.clear();
 
-    // Black Panther (32x48) — near-black suit, purple visor and claw marks
-    g.fillStyle(0x0A0A0A);
+    // Black Panther (32x48) — deep purple suit, bright visor, cat ears, visible claw marks
+    g.fillStyle(0x1a0048);
     g.fillCircle(16, 8, 7);
+    g.fillRect(9,  1, 3, 4);
+    g.fillRect(20, 1, 3, 4);
     g.fillRect(3, 14, 26, 20);
     g.fillRect(4, 34, 11, 14);
     g.fillRect(17, 34, 11, 14);
     g.fillRect(0, 15, 3, 17);
     g.fillRect(29, 15, 3, 17);
-    g.fillStyle(0x8800CC);
+    g.fillStyle(0xCC00FF);
     g.fillRect(5, 5, 22, 3);
     g.fillRect(3, 24, 26, 2);
     g.fillRect(4, 44, 11, 4);
     g.fillRect(17, 44, 11, 4);
-    g.fillStyle(0x5500AA);
+    g.fillStyle(0xAA55FF);
     g.fillRect(10, 17, 1, 7);
     g.fillRect(13, 16, 1, 8);
     g.fillRect(16, 15, 1, 9);

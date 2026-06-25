@@ -765,6 +765,22 @@ With rising lava, a ground-level respawn would drop the player directly into lav
 
 ---
 
+### Black Panther Visibility
+
+**What was asked:** "Can you make black panther more visible"
+
+**What was built**
+Suit changed from `0x0A0A0A` (near-black) to deep purple `0x1a0048`. Visor and belt brightened to `0xCC00FF`, claw marks to `0xAA55FF`. Two 3×4px rectangles added at the top of the head circle as cat ear nubs.
+
+**Why this way**
+Same root cause as Black Widow — near-black on a dark background is invisible. Unlike Black Widow, Black Panther wears a full mask, so no skin face was added. Instead, the suit hue shifted to deep purple (his Vibranium suit has purple tones in many interpretations) and the existing accents were made much brighter. The ear nubs give the helmet a distinct silhouette.
+
+**What was ruled out**
+- Showing a skin face — he's a masked character; it would break the look.
+- Grey suit — less character-appropriate than purple.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

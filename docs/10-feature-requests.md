@@ -473,6 +473,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #40 — Black Panther More Visible
+
+**Asked:** "Can you make black panther more visible"
+**Status:** ✓ Done
+**What was built:** Suit changed from near-black `0x0A0A0A` to deep purple `0x1a0048`. Visor stripe brightened from `0x8800CC` to `0xCC00FF`. Claw marks brightened from `0x5500AA` to `0xAA55FF`. Two small cat ear rectangles added to the top of the helmet.
+**Files changed:** `src/scenes/BootScene.js` (player_panther texture)
+**Design note:** → [Session 7 — Black Panther Visibility](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
