@@ -201,6 +201,8 @@ class GameScene extends Phaser.Scene {
       { x: 7020, y: 355, w: 4 }, { x: 7270, y: 275, w: 3 },
       { x: 7470, y: 205, w: 3 }, { x: 7680, y: 285, w: 4 },
       { x: 7870, y: 225, w: 3 },
+      { x: 7870, y: 160, w: 2 },
+      { x: 7870, y: 95,  w: 2 },
     ];
     this.platforms = this.physics.add.staticGroup();
     platforms.forEach(({ x, y, w }) => {
@@ -272,9 +274,15 @@ class GameScene extends Phaser.Scene {
     const flagGfx = this.add.graphics();
     flagGfx.fillStyle(0x888888); flagGfx.fillRect(0, 0, 4, 60);
     flagGfx.fillStyle(0x00FF44); flagGfx.fillRect(4, 4, 18, 12);
-    flagGfx.x = 7942; flagGfx.y = 408;
-    this.flagZone = this.add.zone(7952, 440, 26, 60).setRectangleDropZone(26, 60);
+    flagGfx.x = 7902; flagGfx.y = 35;
+    this.flagZone = this.add.zone(7916, 65, 26, 60).setRectangleDropZone(26, 60);
     this.physics.add.existing(this.flagZone, true);
+
+    // Rising lava — full-width slab that climbs from below the world
+    this.risingLava = this.add.rectangle(4000, 660, 8000, 200, 0xFF3300).setAlpha(0.88);
+    this.physics.add.existing(this.risingLava);
+    this.risingLava.body.setAllowGravity(false);
+    this.risingLava.body.setVelocityY(-5);
   }
 
   // ─── Player ────────────────────────────────────────────────────────────────
@@ -476,6 +484,10 @@ class GameScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.lavaPools, () => {
       this._ignitePlayer();
+    });
+
+    this.physics.add.overlap(this.player, this.risingLava, () => {
+      if (!this.isGameOver) this._playerDied();
     });
 
     this.physics.add.collider(this.missiles, this.platforms, m => m.destroy());

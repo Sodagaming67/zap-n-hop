@@ -423,6 +423,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #35 — Rising Lava and Higher End Flag
+
+**Asked:** "Can you add rising lava and a higher ending flag"
+**Status:** ✓ Done
+**What was built:** A full-width (8000px) lava rectangle starts below the screen and rises at 5px/sec using a dynamic physics body. Touching it calls `_playerDied()`. Two new step platforms added at the end of the level (y=160 and y=95) give the player something to climb. The end flag moved from ground level (y=408) up to y=35 so the pole sits on the new y=95 platform — the player must climb to reach it.
+**Files changed:** `src/scenes/GameScene.js` (platforms array, flag position, rising lava creation and collision)
+**Design note:** → [Session 7 — Rising Lava and Higher Flag](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

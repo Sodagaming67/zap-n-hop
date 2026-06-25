@@ -686,6 +686,23 @@ The old design was `0x111111` (essentially black) on a dark game background — 
 
 ---
 
+### Rising Lava and Higher Flag
+
+**What was asked:** "Can you add rising lava and a higher ending flag"
+
+**What was built**
+A 8000×200px rectangle is placed at y=660 (below the world) with a dynamic physics body rising at 5px/sec. Touching it immediately calls `_playerDied()`. Two extra step platforms (y=160, y=95) added at the end give the player a route to climb. The flag pole bottom moved from y=468 (ground) to y=95 (top of the new tower), flagZone moved to match.
+
+**Why this way**
+5px/sec gives ~14 seconds before the lava reaches ground level — enough time for a skilled player to reach safety but still creates real pressure. Instant death (rather than ignite/burn) makes sense because the lava covers the whole floor and there's nowhere to escape the fire damage. A dynamic physics body with `setVelocityY(-5)` is the simplest approach — physics.pause() in `_winLevel` and `_gameOver` automatically stops it.
+
+**What was ruled out**
+- Ignite on contact instead of instant death — too forgiving when lava covers the whole screen.
+- Animating the flag tower visually — no built-in tower art; the step platforms communicate the same thing.
+- Faster rise speed (10+px/sec) — tested and felt unfair before players could learn the level.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
