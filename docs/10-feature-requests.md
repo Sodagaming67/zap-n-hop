@@ -453,6 +453,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #38 — Higher Spawn Point
+
+**Asked:** "Can you put the spawn point higher"
+**Status:** ✓ Done
+**What was built:** Player initial position moved from `(64, 400)` (ground level) to `(500, 140)`, dropping onto the first high platform at y=180. Default checkpoint also updated to `(500, 150)` so the first respawn lands there too.
+**Files changed:** `src/scenes/GameScene.js` (lastCheckpoint, player spawn)
+**Design note:** → [Session 7 — Higher Spawn](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

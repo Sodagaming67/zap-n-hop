@@ -735,6 +735,21 @@ Splitting skeletons and zombies across platforms gives each one a distinct feel 
 
 ---
 
+### Higher Spawn Point
+
+**What was asked:** "Can you put the spawn point higher"
+
+**What was built**
+Player spawn and default checkpoint moved from `(64, 400)` to `(500, 140)`. The player drops onto the first high platform (y=180) at the start of the run instead of standing on the street.
+
+**Why this way**
+With rising lava, spawning at ground level gives the player almost no time before the lava arrives. Starting on the first high platform means they're already at a safe altitude and can focus on moving forward rather than immediately climbing. The zombie on that platform (added in #37) gives an immediate obstacle.
+
+**What was ruled out**
+- Keeping ground spawn — fine without lava, but combined with lava it makes the start feel punishing rather than fun.
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |

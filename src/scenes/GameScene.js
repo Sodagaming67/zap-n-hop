@@ -5,7 +5,7 @@ class GameScene extends Phaser.Scene {
     this.score = 0;
     this.isGameOver = false;
     this.invincible = false;
-    this.lastCheckpoint = { x: 64, y: 400 };
+    this.lastCheckpoint = { x: 500, y: 150 };
 
     this.starWallet = parseInt(localStorage.getItem('zapnhop_stars') || '0');
     this.dotWallet  = parseInt(localStorage.getItem('zapnhop_dots')  || '0');
@@ -301,7 +301,7 @@ class GameScene extends Phaser.Scene {
 
   _createPlayer() {
     const charKey = localStorage.getItem('zapnhop_character') || 'player';
-    this.player = this.physics.add.sprite(64, 400, charKey);
+    this.player = this.physics.add.sprite(500, 140, charKey);
     this.player.setCollideWorldBounds(false);
     this.player.setBounce(0.1);
     this.physics.world.setBounds(0, 0, 8000, 500);
