@@ -274,6 +274,38 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #23 — Less Cops, More Zombies, 3-Lives System, Cop Damage Nerf, Hero Powers, Character Info Panel
+
+**Asked:** "Can you put less cops, more zombies at the bottom of the map, and have it so even if you have checkpoints, you lose the game if you die three times. Can you also have it where the cops do barely any damage and are in a more unorganized position. Lastly, can you give the superheros different powers. For example thor can fly, and can you give info on them in the main menu."
+**Status:** ✓ Done
+**What was built:**
+
+- **Fewer cops, irregular positions**: Reduced from 10 to 6 cops. New positions: [640, 1580, 1920, 3800, 5500, 6750] — two clustered near the start, a gap in the mid-game, then two spread at the end. Feels unorganized instead of evenly distributed.
+- **More ground zombies**: Added 8 new zombie enemies at street level (y=430) at x=625, 1650, 2280, 4450, 5380, 5950, 6440, 6930 — filling gaps between existing skeletons.
+- **3-lives system**: Player now has 3 lives (`this.lives`). Dying (fall off or HP=0) decrements lives. Checkpoints still save respawn position, but at 0 lives the game stops and shows GAME OVER. UIScene shows 3 hearts (♥) — red when alive, grey when lost.
+- **Cops barely damage enemies** (`copHealth`): Every enemy spawned gets `copHealth = 3`. Cop bullets decrement it; only kill and award 15pts when `copHealth <= 0`. Player weapons still one-shot (unchanged).
+- **Hero-specific powers** (per-character `CHAR_STATS` + `_charAbility` routing):
+
+| Hero | Stat highlights | Ability |
+|------|----------------|---------|
+| Iron Man | HP 100, Speed 220 | Full Arsenal (all 4 weapons, default) |
+| Cap. America | HP 115, Speed 230 | Shield Throw — weapon 1 launches bouncing cap_shield (4 bounces, passes through enemies) |
+| Thor | HP 120 | Flight — hold jump in air for near-zero gravity hover |
+| Hulk | HP 150, Jump 730 | Ground Smash — hard landing AOE blast (160px radius) + camera shake |
+| Black Widow | Speed 290, invWindow 3500ms | Swift Recovery — 3.5s invincibility after taking damage |
+| Hawkeye | – | Pierce Shot — weapon 1 fires an arrow through 3 enemies |
+| Spider-Man | Jump 640 | Double Jump — press jump a second time mid-air |
+| Black Panther | Speed 305 | Vibranium Dash — press E to dash with brief i-frames |
+| Scarlet Witch | – | Auto Hex — fires magenta bolt at nearest enemy every 2.5s |
+| Doctor Strange | – | Time Stop — press E to slow all enemies to 20% speed for 4s (20s cooldown) |
+
+- **Character info panel**: Clicking a character in CharacterScene now shows their stats (HP, Speed, Jump) and ability description in a panel below the card grid.
+
+**Files changed:** `src/scenes/GameScene.js` (full rewrite — CHAR_STATS, lives, copHealth, new zombies, fewer cops, all abilities, new methods), `src/scenes/UIScene.js` (3 hearts lives display), `src/scenes/CharacterScene.js` (info panel), `src/scenes/BootScene.js` (cap_shield texture, added in prior response)
+**Design note:** → [Session 6 — Hero Powers, Lives System, Cop Nerf](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

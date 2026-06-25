@@ -427,6 +427,18 @@ class BootScene extends Phaser.Scene {
     g.fillStyle(0xFFEE44);
     g.fillRect(10, 0, 12, 2);
     g.generateTexture('debris', 32, 32);
+    g.clear();
+
+    // Cap Shield (22x22) — concentric circles: blue, red, white, blue star
+    g.fillStyle(0x003399);
+    g.fillCircle(11, 11, 11);
+    g.fillStyle(0xCC0000);
+    g.fillCircle(11, 11, 8);
+    g.fillStyle(0xFFFFFF);
+    g.fillCircle(11, 11, 5);
+    g.fillStyle(0x003399);
+    g.fillCircle(11, 11, 2);
+    g.generateTexture('cap_shield', 22, 22);
 
     g.destroy();
   }

@@ -49,8 +49,20 @@ class UIScene extends Phaser.Scene {
     // Inventory bar — bottom of screen
     this._buildInventoryBar();
 
+    // Lives hearts — bottom-left below score
+    this.livesIcons = [];
+    for (let i = 0; i < 3; i++) {
+      this.livesIcons.push(this.add.text(16 + i * 22, 46, '♥', {
+        fontSize: '20px', fontFamily: 'Arial', color: '#ff4444',
+        stroke: '#000000', strokeThickness: 3
+      }));
+    }
+
     // Wire up events
     this.gameScene.events.on('scoreUpdate',    s   => this.scoreText.setText(`Score: ${s}`));
+    this.gameScene.events.on('livesUpdate', (lives) => {
+      this.livesIcons.forEach((t, i) => t.setColor(i < lives ? '#ff4444' : '#444444'));
+    });
     this.gameScene.events.on('healthUpdate', (hp, maxHp) => {
       const pct = hp / maxHp;
       this.hpBar.setSize(165 * pct, 18);
@@ -71,6 +83,7 @@ class UIScene extends Phaser.Scene {
     this._refresh(this.gameScene.inventory);
     this.starText.setText(String(this.gameScene.starWallet));
     this.dotText.setText(String(this.gameScene.dotWallet));
+    this.livesIcons.forEach((t, i) => t.setColor(i < this.gameScene.lives ? '#ff4444' : '#444444'));
   }
 
   _buildInventoryBar() {

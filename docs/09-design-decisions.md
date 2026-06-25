@@ -462,6 +462,65 @@ Procedural textures in `BootScene` keep the zero-asset philosophy intact — no 
 
 ---
 
+---
+
+## Session 6 — Hero Powers, Lives System, Cop Nerf
+
+---
+
+### Less Cops, More Ground Zombies, 3-Lives System, Cop Damage Nerf, Hero Powers, Character Info Panel
+
+**What was asked:** "Can you put less cops, more zombies at the bottom of the map, and have it so even if you have checkpoints, you lose the game if you die three times. Can you also have it where the cops do barely any damage and are in a more unorganized position. Lastly, can you give the superheros different powers. For example thor can fly, and can you give info on them in the main menu."
+
+**What was built**
+
+Six independent changes across four files:
+
+1. **Fewer cops, unorganized positions** — reduced from 10 to 6 cops at positions [640, 1580, 1920, 3800, 5500, 6750]. Two are close together near the start (640, 1580) and two slightly clustered at the end, with a large mid-map gap. This gives an irregular feel vs. every-800px even spacing.
+
+2. **More ground zombies** — 8 new zombies at y=430 (street level) added across mid and late sectors, slotted into the gaps between existing skeletons. They use the `zombie` texture and have `copHealth = 3`.
+
+3. **3-lives system** — `this.lives = 3` in `create()`. `_playerDied()` decrements lives and fires `livesUpdate` event before deciding to respawn or show GAME OVER. Checkpoints are unchanged — they still save respawn position, but they no longer guarantee survival past 3 deaths. UIScene renders 3 heart icons (♥) in red/grey.
+
+4. **copHealth (cop damage nerf)** — every enemy created (including sky zombies) gets `copHealth = 3`. The cop bullet overlap decrements it and only destroys the enemy when it hits zero (15 pts). Player weapons (`missiles`, `repulsors`, `unibeams`, cap shield) still use `enemy.destroy()` directly — one-shot, unchanged.
+
+5. **Per-character CHAR_STATS + abilities** — a lookup table in `create()` maps each character texture key to `{ speed, jump, hp, invWindow, ability }`. The `ability` string routes behavior throughout `update()`, `_fireWeapon()`, and a new `_useSpecialAbility()` method:
+   - **Iron Man** (`arsenal`): default path, all 4 weapons.
+   - **Cap. America** (`shield`): weapon 1 routes to `_throwCapShield()` — a physics sprite with `setBounce(1)` and `setCollideWorldBounds(true)`. Bounce counter destroys at 4. Enemy overlap destroys enemy but NOT the shield (pass-through). Self-destructs after 4s as fallback.
+   - **Thor** (`fly`): `player.body.setGravityY(-570)` while jump is held in air. Net gravity = ~40 (near-float). Reset to 0 otherwise so normal gravity applies when grounded.
+   - **Hulk** (`smash`): `_peakFallVel` tracked each frame while `!onGround`. On landing (`onGround && !_wasOnGround`), if peak > 380, AOE destroy all enemies within 160px + camera shake. Velocity is already 0 by the time landing is detected, so tracking peak separately is necessary.
+   - **Black Widow** (`swift`): `invWindow` in CHAR_STATS is 3500ms instead of 1500ms — the `_takeDamage()` method reads `this._invWindow` (not a hardcoded value), so this is the only change needed.
+   - **Hawkeye** (`pierce`): weapon 1 routes to `_firePierceArrow()` — fires into `this.unibeams` group (which already has 3-hit pierce collision logic). Arrow texture used instead of unibeam_bolt.
+   - **Spider-Man** (`doublejump`): tracks `_jumpHeld` (previous frame) for JustDown detection. When in air, `_jumpCount === 1`, and jump was just pressed: second jump at 85% force. `_jumpCount` prevents infinite jumping.
+   - **Black Panther** (`dash`): E key triggers `_useSpecialAbility()` → `setVelocityX(±960)` in movement direction + 280ms invincibility. 1-second cooldown via `_abilityLastUsed` timestamp.
+   - **Scarlet Witch** (`hex`): `time.addEvent` with `delay: 2500, loop: true` in `create()` calls `_fireHexBolt()`. Finds nearest enemy within 520px, fires a repulsor with `setTint(0xFF44FF)` (magenta) toward it. Reuses `this.repulsors` group — same collision logic with no extra setup.
+   - **Doctor Strange** (`timestop`): E key → iterates enemies, caches `e._origSpeed = e.patrolSpeed`, sets `patrolSpeed` to 15% of original. `delayedCall(4000)` restores all speeds. 20-second cooldown. Flash effect at activation.
+
+6. **Character info panel in CharacterScene** — a dark rectangle below the card grid shows the selected hero's name, ability name, stat line (HP / Speed / Jump), and a one-sentence ability description. Seeded on load with the saved character; updates on every card click.
+
+**Why this way**
+
+- **`copHealth` on the enemy object, not a Map** — keeps all enemy state on the sprite itself; works with Phaser's overlap callbacks which only receive the two overlapping objects.
+- **Reusing `this.unibeams` for Hawkeye** — the pierce collision logic (decrement `pierceCount`, destroy only at 0) is already correct for arrows; no second group or duplicate collider needed.
+- **Reusing `this.repulsors` for Scarlet Witch** — same reasoning; the repulsor collision (destroy on enemy hit, 1 enemy per shot) is exactly what hex bolts need. Visual distinction via `setTint`.
+- **`_jumpHeld` for Spider-Man** — Phaser's `JustDown` helper doesn't work cleanly when you need to suppress the repeat-frame detection that normal jump uses (`isDown && onGround`). Manually tracking previous frame state handles it in one variable.
+- **CHAR_STATS in `create()` not a global** — keeps it close to where it's used; no risk of other scenes accidentally reading or modifying it.
+- **Lives display as hearts in UIScene, not a counter** — more visual and immediately readable than "Lives: 2"; consistent with the aesthetic of the game.
+
+**What was ruled out**
+
+| Option | Why rejected |
+|--------|-------------|
+| Cop bullets do zero damage | Still wanted them to eventually kill enemies — just slowly. 3 hits is a nerf, not a nullification. |
+| Per-enemy copHealth in a separate Map | Object property is simpler and lives with the sprite until it's destroyed. |
+| Separate projectile groups for each ability | Existing groups already have the right collision behavior; reusing avoids 3+ extra collider registrations. |
+| Thor ability as a speed boost instead of flight | Flight is more iconic for Thor and technically more interesting (gravity manipulation). |
+| Hulk smash detecting velocity at the moment of impact | Velocity is 0 by the time `update()` sees the landing frame — peak tracking is required. |
+| Cap shield ricocheting off enemies | Cleaner feel to pass through and keep bouncing; enemies are destroyed on overlap, not reflected. |
+| Info panel as a separate tooltip/popup | Inline panel is simpler and always visible — no hover/click to dismiss flow needed. |
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
