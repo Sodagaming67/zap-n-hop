@@ -364,6 +364,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #29 — Character Select After Press Play
+
+**Asked:** "Can you move the character selection menu so you can select the character after you press play"
+**Status:** ✓ Done
+**What was built:** PLAY in the main menu now launches CharacterScene instead of GameScene. CharacterScene gained a "START GAME >" button (right side) and a "< BACK" button (left side) replacing the single centred back button. The redundant CHARACTERS button was removed from the main menu; remaining buttons (ITEM SHOP, PREMIUM SHOP) shifted to fill the space.
+**Files changed:** `src/scenes/MenuScene.js`, `src/scenes/CharacterScene.js`
+**Design note:** → [Session 6 — Play Flow](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:

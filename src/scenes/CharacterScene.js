@@ -103,8 +103,8 @@ class CharacterScene extends Phaser.Scene {
     const initChar = characters.find(c => c.key === savedKey) || characters[0];
     this._showInfo(initChar, INFO[savedKey] || INFO['player']);
 
-    this._addBtn(W / 2, H - 16, '< BACK TO MENU', '#333333', '#555555',
-      () => this.scene.start('MenuScene'));
+    this._addBtn(200, H - 16, '< BACK',      '#333333', '#555555', () => this.scene.start('MenuScene'));
+    this._addBtn(600, H - 16, 'START GAME >', '#226600', '#44AA00', () => this.scene.start('GameScene'));
   }
 
   _showInfo(char, info) {

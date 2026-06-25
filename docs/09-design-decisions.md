@@ -607,6 +607,20 @@ Three new sky systems + doubled existing spawn rates + UIScene conditional rende
 
 ---
 
+### Character Select Moved Into Play Flow
+
+**What was asked:** "Can you move the character selection menu so you can select the character after you press play"
+
+**What was built**
+PLAY → CharacterScene → GameScene. CharacterScene now has two bottom buttons: "< BACK" (left, → MenuScene) and "START GAME >" (right, → GameScene). The CHARACTERS button was removed from the main menu — it's now redundant since character selection is always on the path to playing.
+
+**Why this way**
+- **CharacterScene as the gate** — the most natural place to confirm your hero before the run starts. Selecting a character and immediately pressing START GAME is a single focused action.
+- **Removing CHARACTERS from menu** — keeping it would create two paths to the same screen with different purposes (browse vs. play), which is confusing. Three menu items (PLAY, ITEM SHOP, PREMIUM SHOP) is cleaner than four.
+- **Two-button layout** — BACK on the left and START on the right follows standard UI convention (cancel left, confirm right).
+
+---
+
 ## Technology Stack
 
 | Layer | Technology | Why chosen |
