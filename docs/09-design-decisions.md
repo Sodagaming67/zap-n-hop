@@ -795,6 +795,17 @@ Same root cause as Black Widow — near-black on a dark background is invisible.
 
 ---
 
+## Current Session — New-Game Skill
+
+### New-Game Skill
+
+**What was asked:** "Create a skill called 'new-game' to spin up a new game repo with the same setup as this one — collect requirements, suggest repo names, create the GitHub repo, clone it, scaffold everything, then hand off."
+**What was built:** `.claude/commands/new-game.md` — a 4-phase sequential skill. Phase 1 asks 4 concept questions then generates 6 name suggestions. Phase 2 creates the GitHub repo via `gh repo create`. Phase 3 clones and writes every file (CLAUDE.md, settings.json with auto-commit hook, start skill, docs skeleton, .gitignore, index.html, main.js, 4 Phaser scene stubs). Git user is set to Philip Thangiah / Sodagaming67 per-repo. Phase 4 hands off with clear instructions to switch the working directory.
+**Why this way:** A skill file is the right primitive — it keeps the scaffold logic inside the project where it's version-controlled, not scattered in memory or a separate tool. Making phases explicit and sequential prevents Claude from racing ahead before the user has picked a name or confirmed repo creation. Writing every file inside the skill means the new repo is self-sufficient immediately; the user doesn't need a second setup conversation.
+**What was ruled out:** A bash script — harder to edit and not readable from the Claude Code chat. A template GitHub repo (requires a separate GitHub org/template setup). Storing the scaffold in memory — memory is too fragile for something this structural.
+
+---
+
 ## Open Questions / Future Decisions
 
 These are known compromises worth revisiting. Each row is a deliberate "good enough for now" that has a better long-term answer.

@@ -483,6 +483,16 @@ Each entry links to [09-design-decisions.md](09-design-decisions.md) for the ful
 
 ---
 
+### #41 — New-Game Skill
+
+**Asked:** "Create a new skill called 'new-game' to spin up a brand-new game repo with the same setup as this one."
+**Status:** ✓ Done
+**What was built:** `.claude/commands/new-game.md` — a 4-phase skill: (1) collects game concept and suggests repo names, (2) creates a public GitHub repo under Sodagaming67, (3) clones and scaffolds the full project (CLAUDE.md, settings.json, start skill, docs, Phaser skeleton scenes), (4) instructs user to switch repos. Git user is configured to Philip Thangiah/Sodagaming67 in every new repo.
+**Files changed:** `.claude/commands/new-game.md` (new)
+**Design note:** → [Current Session — New-Game Skill](09-design-decisions.md)
+
+---
+
 ## How to Update This File
 
 When a new feature is added:
