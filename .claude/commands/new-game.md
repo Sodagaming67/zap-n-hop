@@ -386,16 +386,16 @@ class UIScene extends Phaser.Scene {
 
 ---
 
-### 3d. Initial git commit
+### 3d. Configure git user and make initial commit
 
 ```powershell
 Set-Location "c:\Code\Games\REPO_NAME"
+git config user.name "Philip Thangiah"
+git config user.email "jey@mcloudtechnology.com"
 git add -A
 git commit -m "Initial scaffold: Phaser 3 project setup for GAME_TITLE"
-git push origin main
+git push -u origin main
 ```
-
-If `main` branch doesn't exist yet, use `git push -u origin main`.
 
 ---
 
